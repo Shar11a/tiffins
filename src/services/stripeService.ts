@@ -1,6 +1,6 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { app } from '../firebase/config';
+import app from '../firebase/config';
 
 // Initialize Firebase Functions
 const functions = getFunctions(app);
