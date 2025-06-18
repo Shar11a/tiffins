@@ -1,7 +1,7 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Initialize Stripe with the key from environment variables
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || '');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || 'pk_test_51RamUcHWjfKWu0SwXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 
 export interface PaymentData {
   name: string;

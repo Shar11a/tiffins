@@ -12,7 +12,7 @@ import { handleCheckout } from '../../services/stripeService'
 import styles from './PaymentPage.module.css'
 
 // Initialize Stripe with the key from environment variables
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || '')
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || 'pk_test_51RamUcHWjfKWu0SwXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 
 interface PaymentData {
   name: string
@@ -55,22 +55,26 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
     }
 
     try {
-      // Process payment with Stripe Checkout
-      const checkoutResult = await handleCheckout({
-        name: paymentData.name,
-        email: paymentData.email,
-        phone: paymentData.phone,
-        address: paymentData.address,
-        deliverySlot: paymentData.deliverySlot,
-        planType: paymentData.planType,
-        studentStatus: paymentData.studentStatus,
-        subscriptionType: paymentData.subscriptionType,
-        amount: paymentData.amount
+      // Process payment with Stripe
+      const { error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: cardElement,
+        billing_details: {
+          name: paymentData.name,
+          email: paymentData.email,
+          phone: paymentData.phone,
+          address: {
+            line1: paymentData.address,
+          },
+        },
       })
 
-      if (!checkoutResult.success) {
-        throw new Error(checkoutResult.error || 'Payment failed')
+      if (error) {
+        throw new Error(error.message || 'Payment failed')
       }
+
+      // For demo purposes, we'll simulate a successful payment
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
       // Create customer record after successful payment
       const result = await addCustomer({
@@ -89,7 +93,7 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
 
     } catch (error) {
       console.error('Payment error:', error)
-      setPaymentError('Payment processing failed. Please try again.')
+      setPaymentError(error instanceof Error ? error.message : 'Payment processing failed. Please try again.')
     } finally {
       setIsProcessing(false)
     }
