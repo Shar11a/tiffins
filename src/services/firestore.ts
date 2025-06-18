@@ -13,7 +13,7 @@ import {
   onSnapshot,
   Timestamp
 } from 'firebase/firestore'
-import { db } from '../firebase/config'
+import { db, auth } from '../firebase/config'
 import { sendSubscriptionConfirmation, sendDeliveryStatusUpdate } from './notifications'
 
 // Generate secure tracking token
@@ -40,6 +40,7 @@ export interface Customer {
   trackingToken: string // New field for tracking
   subscriptionType?: 'daily' | 'monthly' // New field for subscription type
   subscriptionEndDate?: Timestamp // New field for subscription end date
+  userId?: string // New field to store the authenticated user ID
 }
 
 // Menu interface
@@ -100,7 +101,7 @@ export interface DeliveryStatus {
 }
 
 // Customer operations
-export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate' | 'trackingToken' | 'subscriptionEndDate'>) => {
+export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate' | 'trackingToken' | 'subscriptionEndDate' | 'userId'>) => {
   try {
     const trackingToken = generateTrackingToken()
     
@@ -112,11 +113,15 @@ export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate
       subscriptionEndDate = Timestamp.fromDate(endDate)
     }
     
+    // Add userId if user is authenticated
+    const userId = auth.currentUser?.uid || null
+    
     const docRef = await addDoc(collection(db, 'customers'), {
       ...customerData,
       orderDate: Timestamp.now(),
       trackingToken,
-      ...(subscriptionEndDate && { subscriptionEndDate })
+      ...(subscriptionEndDate && { subscriptionEndDate }),
+      ...(userId && { userId }) // Add userId if available
     })
     
     // Generate order ID

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { addCustomer } from '../../../services/firestore'
+import { auth } from '../../../firebase/config'
 import styles from './SubscriptionForm.module.css'
 
 interface FormData {
