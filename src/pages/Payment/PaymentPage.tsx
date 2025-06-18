@@ -8,7 +8,6 @@ import {
   useElements
 } from '@stripe/react-stripe-js'
 import { addCustomer } from '../../services/firestore'
-import { handleCheckout } from '../../services/stripeService'
 import styles from './PaymentPage.module.css'
 
 // Initialize Stripe with the key from environment variables
