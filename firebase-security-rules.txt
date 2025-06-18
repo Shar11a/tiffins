@@ -5,6 +5,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // Base rule - deny access by default for security
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --------------------
+    // MENU & CONTENT RULES
+    // --------------------
+    
     // Allow read access to menu items for all users
     match /menu/{document} {
       allow read: if true;
@@ -17,11 +26,94 @@ service cloud.firestore {
       allow write: if request.auth != null && isAdmin();
     }
     
+    // ---------------
+    // CUSTOMER RULES
+    // ---------------
+    
     // Customer data - allow creation for all users, read/write for authenticated users
     match /customers/{document} {
       allow create: if true; // Allow unauthenticated users to create subscription records
-      allow read, write: if request.auth != null;
+      allow read, write: if request.auth != null && (
+        // Owner can read/write their own data
+        request.auth.uid == document ||
+        // Admins can read/write all customer data
+        isAdmin()
+      );
     }
+    
+    // ---------------
+    // USER PROFILES
+    // ---------------
+    
+    // User profiles - users can read/write their own data only
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Admins can read all user data
+      allow read: if request.auth != null && isAdmin();
+    }
+    
+    // ---------------
+    // PAYMENT RULES
+    // ---------------
+    
+    // Payment history - strict rules
+    match /paymentHistory/{paymentId} {
+      // Users can read their own payments only
+      allow read: if request.auth != null && 
+                   resource.data.customerId == request.auth.uid;
+      
+      // Only allow secure server operations or admins to write payment data
+      allow write: if request.auth != null && 
+                    (isAdmin() ||
+                     request.resource.data.source == 'server' && 
+                     request.resource.data.serverTimestamp == request.time);
+      
+      // Additional validation for payment amounts to prevent fraud
+      allow create: if request.auth != null && 
+                      request.resource.data.amount > 0 &&
+                      request.resource.data.currency is string &&
+                      request.resource.data.paymentIntentId is string &&
+                      request.resource.data.status in ['succeeded', 'pending', 'failed'];
+    }
+    
+    // Subscription data - secured for both customers and admins
+    match /subscriptions/{subscriptionId} {
+      // Allow users to read their own subscriptions
+      allow read: if request.auth != null && 
+                   resource.data.customerId == request.auth.uid;
+
+      // Allow admins to read and write all subscriptions
+      allow read, write: if request.auth != null && isAdmin();
+      
+      // Allow customers to create/update their own subscriptions with limited status options
+      allow create, update: if request.auth != null &&
+                              (isAdmin() ||
+                              (request.resource.data.customerId == request.auth.uid &&
+                               request.resource.data.status in ['active', 'pending']));
+                               
+      // Prevent deletion of subscriptions by customers
+      allow delete: if request.auth != null && isAdmin();
+    }
+    
+    // Subscription payments links - join table
+    match /subscriptionPayments/{linkId} {
+      // Allow users to read their own subscription payments
+      allow read: if request.auth != null && 
+                   get(/databases/$(database)/documents/subscriptions/$(resource.data.subscriptionId)).data.customerId == request.auth.uid;
+      
+      // Only allow server operations or admins to create payment links
+      allow create: if request.auth != null && 
+                     (isAdmin() ||
+                      request.resource.data.source == 'server');
+                      
+      // No updates or deletes allowed to preserve payment history integrity
+      allow update, delete: if false;
+    }
+    
+    // ---------------
+    // DELIVERY RULES
+    // ---------------
     
     // Delivery partners - only authenticated users can read, only admins can write
     match /deliveryPartners/{document} {
@@ -60,38 +152,88 @@ service cloud.firestore {
         isAssignedRider(resource.data.assignedPartner)
       );
       
-      // ADD THIS LINE: Allow delete for admins
+      // Allow delete for admins
       allow delete: if request.auth != null && isAdmin();
     }
     
-    // Helper functions
-    function isAdmin() {
-      // Add your admin email addresses here
-      return request.auth.token.email in [
-        'admin@tiffinbox.com',
-        'manager@tiffinbox.com'
-      ];
+    // Detailed delivery collection - secured by role
+    match /delivery/{deliveryId} {
+      // Customers can see their own deliveries
+      allow read: if request.auth != null && 
+                   resource.data.customerId == request.auth.uid;
+                   
+      // Delivery partners can see assigned deliveries
+      allow read: if request.auth != null && 
+                   resource.data.partnerId == request.auth.uid;
+                   
+      // Only admins can create or modify deliveries
+      allow write: if request.auth != null && isAdmin();
+                    
+      // Delivery partners can update status only
+      allow update: if request.auth != null && 
+                     resource.data.partnerId == request.auth.uid &&
+                     request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt']);
     }
     
+    // ---------------
+    // HELPER FUNCTIONS
+    // ---------------
+    
+    // Check if the user is an admin
+    function isAdmin() {
+      // First check if user has admin role in users collection
+      return request.auth != null && (
+        // Check for admin role in users collection
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
+        // Fallback to admin email list
+        request.auth.token.email in [
+          'tiffinboxedi@gmail.com',
+          'manager@tiffinbox.com'
+        ]
+      );
+    }
+    
+    // Check if the user is the assigned rider
     function isAssignedRider(assignedPartnerId) {
       // Check if the current user is the assigned rider for this delivery
       return exists(/databases/$(database)/documents/deliveryPartners/$(assignedPartnerId)) &&
              get(/databases/$(database)/documents/deliveryPartners/$(assignedPartnerId)).data.email == request.auth.token.email;
     }
-    
-    // Deny all other access
-    match /{document=**} {
-      allow read, write: if false;
-    }
   }
 }
 
-// Firebase Storage Rules (if using Firebase Storage)
+// Firebase Storage Rules
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if request.auth != null && (
+        // Allow admin users to write to any storage location
+        isStorageAdmin() ||
+        // Allow users to write to their own folder
+        request.auth.uid == userId
+      );
+    }
+    
+    // User-specific storage area for profile photos and documents
+    match /users/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        isStorageAdmin()
+      );
+      allow write: if request.auth != null && (
+        request.auth.uid == userId ||
+        isStorageAdmin()
+      );
+    }
+    
+    // Helper function for storage admin access
+    function isStorageAdmin() {
+      return request.auth != null && request.auth.token.email in [
+        'tiffinboxedi@gmail.com',
+        'manager@tiffinbox.com'
+      ];
     }
   }
 }
