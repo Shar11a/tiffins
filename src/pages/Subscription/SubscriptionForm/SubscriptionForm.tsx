@@ -167,25 +167,35 @@ const SubscriptionForm: React.FC = () => {
       // Combine address fields into a single address string
       const fullAddress = `${formData.flatNumber}, ${formData.buildingStreet}, ${formData.town}, ${formData.postCode}, ${formData.country}`
       
-      // Save to Firebase and get tracking token
-      const result = await addCustomer({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.contactNumber,
-        address: fullAddress,
-        deliverySlot: formData.deliverySlot,
-        planType: formData.planType,
-        studentStatus: formData.studentStatus,
-        subscriptionType: formData.subscriptionType
+      // Calculate price in pence (for Stripe)
+      const basePrice = selectedPlan === 'veg' ? 18199 : 25999 // in pence
+      let finalPrice = basePrice
+      
+      // Apply student discount if applicable (20%)
+      if (formData.studentStatus) {
+        finalPrice = Math.round(finalPrice * 0.8)
+      }
+      
+      // Navigate to payment page with form data
+      navigate('/payment', {
+        state: {
+          paymentData: {
+            name: formData.name,
+            email: formData.email,
+            phone: formData.contactNumber,
+            address: fullAddress,
+            deliverySlot: formData.deliverySlot,
+            planType: formData.planType,
+            studentStatus: formData.studentStatus,
+            subscriptionType: formData.subscriptionType,
+            amount: finalPrice,
+            currency: 'gbp'
+          }
+        }
       })
-
-      setTrackingToken(result.trackingToken)
-      setSubmitSuccess(true)
-
     } catch (error) {
       console.error('Error submitting subscription:', error)
       alert('Failed to submit subscription. Please try again.')
-    } finally {
       setIsSubmitting(false)
     }
   }
@@ -643,7 +653,7 @@ const SubscriptionForm: React.FC = () => {
                 ) : (
                   <>
                     <span className={styles.buttonIcon}>🚀</span>
-                    Start My Subscription
+                    Proceed to Payment
                   </>
                 )}
               </button>

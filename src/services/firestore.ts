@@ -131,19 +131,14 @@ export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate
     const basePrice = customerData.planType === 'veg' ? 181.99 : 259.99
     let finalPrice = basePrice
     
-    // Calculate monthly price (no discount)
-    if (customerData.subscriptionType === 'monthly') {
-      finalPrice = basePrice * 30 // No discount for monthly
-    }
-    
     // Apply student discount if applicable (20%)
     if (customerData.studentStatus) {
       finalPrice = finalPrice * 0.8
     }
     
     const priceDisplay = customerData.subscriptionType === 'monthly' 
-      ? `₹${finalPrice.toFixed(2)} for 30 days` 
-      : `₹${basePrice.toFixed(2)}/day`
+      ? `£${finalPrice.toFixed(2)} for 30 days` 
+      : `£${basePrice.toFixed(2)}/day`
     
     // Create initial delivery status - MODIFIED to use trackingToken as document ID
     await setDoc(doc(db, 'deliveryStatus', trackingToken), {
@@ -768,6 +763,31 @@ export const getRiderById = async (id: string): Promise<DeliveryPartner | null> 
     } as DeliveryPartner
   } catch (error) {
     console.error('Error getting rider by ID:', error)
+    throw error
+  }
+}
+
+// Add payment record
+export interface PaymentRecord {
+  id?: string
+  customerId: string
+  amount: number
+  currency: string
+  status: 'succeeded' | 'pending' | 'failed'
+  paymentMethod: string
+  createdAt: Timestamp
+  metadata?: Record<string, any>
+}
+
+export const addPaymentRecord = async (paymentData: Omit<PaymentRecord, 'id' | 'createdAt'>) => {
+  try {
+    const docRef = await addDoc(collection(db, 'paymentHistory'), {
+      ...paymentData,
+      createdAt: Timestamp.now()
+    })
+    return docRef.id
+  } catch (error) {
+    console.error('Error adding payment record:', error)
     throw error
   }
 }

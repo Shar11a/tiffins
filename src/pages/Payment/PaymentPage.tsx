@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { loadStripe } from '@stripe/stripe-js'
 import {
@@ -8,10 +8,11 @@ import {
   useElements
 } from '@stripe/react-stripe-js'
 import { addCustomer } from '../../services/firestore'
+import { handleCheckout } from '../../services/stripeService'
 import styles from './PaymentPage.module.css'
 
 // Initialize Stripe with the key from environment variables
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || 'pk_live_51RamUcHWjfKWu0Swhb89dRrho2hHHRxU0M1A3VwDiRsWUbiPU55xVFc7Tdw2WHv7q6VWfA548UG2ScK9kJdfqFRG00UO3mKPWE')
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || '')
 
 interface PaymentData {
   name: string
@@ -21,6 +22,7 @@ interface PaymentData {
   deliverySlot: string
   planType: 'veg' | 'non-veg'
   studentStatus: boolean
+  subscriptionType: 'daily' | 'monthly'
   amount: number
   currency: string
 }
@@ -53,29 +55,22 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
     }
 
     try {
-      // Create payment method
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: cardElement,
-        billing_details: {
-          name: paymentData.name,
-          email: paymentData.email,
-          phone: paymentData.phone,
-          address: {
-            line1: paymentData.address,
-          },
-        },
+      // Process payment with Stripe Checkout
+      const checkoutResult = await handleCheckout({
+        name: paymentData.name,
+        email: paymentData.email,
+        phone: paymentData.phone,
+        address: paymentData.address,
+        deliverySlot: paymentData.deliverySlot,
+        planType: paymentData.planType,
+        studentStatus: paymentData.studentStatus,
+        subscriptionType: paymentData.subscriptionType,
+        amount: paymentData.amount
       })
 
-      if (error) {
-        setPaymentError(error.message || 'Payment failed')
-        setIsProcessing(false)
-        return
+      if (!checkoutResult.success) {
+        throw new Error(checkoutResult.error || 'Payment failed')
       }
-
-      // In a real implementation, you would send the payment method to your backend
-      // For demo purposes, we'll simulate a successful payment
-      await new Promise(resolve => setTimeout(resolve, 2000))
 
       // Create customer record after successful payment
       const result = await addCustomer({
@@ -85,7 +80,8 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
         address: paymentData.address,
         deliverySlot: paymentData.deliverySlot,
         planType: paymentData.planType,
-        studentStatus: paymentData.studentStatus
+        studentStatus: paymentData.studentStatus,
+        subscriptionType: paymentData.subscriptionType
       })
 
       setTrackingToken(result.trackingToken)
