@@ -1,0 +1,587 @@
+.deliverySummaryCard {
+  padding: 3rem 0;
+  background: #fef6e4;
+  position: relative;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Back Button */
+.backButton {
+  background: #f5ebe0;
+  border: 2px solid #d62828;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: #d62828;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backButton:hover {
+  background: #d62828;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Main Card */
+.card {
+  background: #ffffff;
+  border: 2px solid #f5ebe0;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.card.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+  animation: cardLift 0.8s ease-out forwards;
+}
+
+@keyframes cardLift {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 12px 50px rgba(214, 40, 40, 0.15);
+  }
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #f5ebe0;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #d62828;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.3;
+}
+
+.estimatedTime {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.timeIcon {
+  font-size: 1.2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Status Section */
+.statusSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f5ebe0;
+  border-radius: 16px;
+  border: 1px solid rgba(214, 40, 40, 0.1);
+}
+
+.currentStatus {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.statusIcon {
+  font-size: 2rem;
+  background: #d62828;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.statusContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statusLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+.statusValue {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #d62828;
+  font-family: 'Poppins', sans-serif;
+}
+
+.liveTrackingBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #e8f5e8;
+  color: #25d366;
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(37, 211, 102, 0.2);
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  background: #25d366;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.liveText {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Order Summary */
+.orderSummary {
+  margin-bottom: 2rem;
+}
+
+.summaryTitle {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #fef6e4;
+  border-radius: 12px;
+  border: 1px solid rgba(214, 40, 40, 0.1);
+  transition: all 0.3s ease;
+}
+
+.summaryItem:hover {
+  background: #f5ebe0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.1);
+}
+
+.itemIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.itemLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+.itemValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.4;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.primaryButton {
+  background: #d62828;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+}
+
+.primaryButton:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(214, 40, 40, 0.4);
+}
+
+.secondaryButton {
+  background: #f5ebe0;
+  color: #d62828;
+  border: 2px solid #d62828;
+}
+
+.secondaryButton:hover {
+  background: #d62828;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.buttonIcon {
+  font-size: 1.1rem;
+}
+
+/* Progress Section */
+.progressSection {
+  padding-top: 1.5rem;
+  border-top: 1px solid #f5ebe0;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progressTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.progressPercentage {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #d62828;
+  font-family: 'Poppins', sans-serif;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: #f5ebe0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.progressFill {
+  width: 75%;
+  height: 100%;
+  background: linear-gradient(90deg, #d62828 0%, #f56565 100%);
+  border-radius: 4px;
+  animation: progressGrow 1s ease-out;
+  transition: width 0.5s ease;
+}
+
+@keyframes progressGrow {
+  from { width: 0%; }
+  to { width: 75%; }
+}
+
+.progressSteps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  position: relative;
+}
+
+.stepIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background: #f5ebe0;
+  border: 2px solid #f5ebe0;
+  transition: all 0.3s ease;
+}
+
+.step.completed .stepIcon {
+  background: #25d366;
+  border-color: #25d366;
+  color: #ffffff;
+}
+
+.step.active .stepIcon {
+  background: #d62828;
+  border-color: #d62828;
+  color: #ffffff;
+  animation: pulse-step 2s ease-in-out infinite;
+}
+
+@keyframes pulse-step {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.stepLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.step.completed .stepLabel,
+.step.active .stepLabel {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deliverySummaryCard {
+    padding: 2rem 0;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .card {
+    padding: 2rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .estimatedTime {
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .statusSection {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .summaryGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .actionButtons {
+    flex-direction: column;
+  }
+  
+  .progressSteps {
+    gap: 0.5rem;
+  }
+  
+  .stepLabel {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+  
+  .title {
+    font-size: 1.3rem;
+  }
+  
+  .statusIcon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.8rem;
+  }
+  
+  .summaryItem {
+    padding: 0.8rem;
+  }
+  
+  .itemIcon {
+    font-size: 1.3rem;
+  }
+  
+  .primaryButton,
+  .secondaryButton {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .stepIcon {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+  
+  .stepLabel {
+    font-size: 0.7rem;
+  }
+  
+  .backButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card,
+  .summaryItem,
+  .primaryButton,
+  .secondaryButton,
+  .backButton {
+    border: 2px solid currentColor;
+  }
+  
+  .statusSection {
+    border: 2px solid #2b2b2b;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: opacity 0.3s ease;
+  }
+  
+  .timeIcon,
+  .statusIcon,
+  .liveDot,
+  .stepIcon {
+    animation: none;
+  }
+  
+  .summaryItem,
+  .primaryButton,
+  .secondaryButton,
+  .backButton {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .summaryItem:hover,
+  .primaryButton:hover,
+  .secondaryButton:hover,
+  .backButton:hover {
+    transform: none;
+  }
+  
+  .progressFill {
+    animation: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.primaryButton:focus,
+.secondaryButton:focus,
+.backButton:focus {
+  outline: 2px solid #d62828;
+  outline-offset: 2px;
+}
+
+/* Loading states */
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.primaryButton:disabled:hover,
+.secondaryButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

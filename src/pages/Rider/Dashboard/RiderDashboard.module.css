@@ -1,0 +1,694 @@
+.riderDashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  font-family: 'Poppins', sans-serif;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Header */
+.header {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.welcomeSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.riderAvatar {
+  width: 60px;
+  height: 60px;
+  background: #3b82f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.welcomeText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.welcomeTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.welcomeSubtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.logoutButton {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoutButton:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.statCard {
+  background: #f8fafc;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.statCard:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+}
+
+.statIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.statValue {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3b82f6;
+  margin-bottom: 0.25rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Orders Section */
+.ordersSection {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionIcon {
+  font-size: 1.3rem;
+}
+
+.refreshButton {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.refreshButton:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* Order Cards */
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.orderCard {
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.orderCard:hover {
+  background: #ffffff;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+}
+
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.orderInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.orderId {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Courier New', monospace;
+}
+
+.customerName {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #3b82f6;
+  font-family: 'Poppins', sans-serif;
+}
+
+.statusBadge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.statusBadge.prepared {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fbbf24;
+}
+
+.statusBadge.pickedUp {
+  background: #fed7aa;
+  color: #ea580c;
+  border: 1px solid #fb923c;
+}
+
+.statusBadge.onTheWay {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #3b82f6;
+}
+
+.orderDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detailLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+.detailValue {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.customerAddress {
+  background: #e0f2fe;
+  border: 1px solid #0284c7;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.addressLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #0284c7;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.addressText {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  line-height: 1.4;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Action Buttons */
+.orderActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pickupButton {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.pickupButton:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.onWayButton {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.onWayButton:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.deliverButton {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.deliverButton:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.callButton {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.callButton:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+/* OTP Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 2rem;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideInModal 0.3s ease-out;
+}
+
+@keyframes slideInModal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.closeButton {
+  background: #f8fafc;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  color: #2b2b2b;
+}
+
+.closeButton:hover {
+  background: #ef4444;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.modalContent {
+  padding: 1rem 2rem 2rem 2rem;
+}
+
+.otpSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.otpInstructions {
+  font-size: 0.95rem;
+  color: #2b2b2b;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.otpInputContainer {
+  background: #f0f9ff;
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.otpLabel {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.otpInput {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #3b82f6;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 4px;
+  background: #ffffff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 2px solid #3b82f6;
+  width: 180px;
+  text-align: center;
+}
+
+.otpInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.otpError {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+}
+
+.confirmButton,
+.cancelButton {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.confirmButton {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.confirmButton:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.confirmButton:disabled {
+  background: #d1d5db;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background: #f8fafc;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #ef4444;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.cancelButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #2b2b2b;
+  opacity: 0.6;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.emptyText {
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.emptySubtext {
+  font-size: 0.9rem;
+  font-weight: 400;
+  font-family: 'Poppins', sans-serif;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .header {
+    padding: 1.5rem;
+  }
+  
+  .headerTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .orderDetails {
+    grid-template-columns: 1fr;
+  }
+  
+  .orderActions {
+    flex-direction: column;
+  }
+  
+  .modalOverlay {
+    padding: 1rem;
+  }
+  
+  .modalHeader {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .modalContent {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .modalActions {
+    flex-direction: column;
+  }
+  
+  .otpInput {
+    font-size: 1.5rem;
+    width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .riderDashboard {
+    padding: 1rem 0;
+  }
+  
+  .header {
+    padding: 1.25rem;
+  }
+  
+  .welcomeTitle {
+    font-size: 1.3rem;
+  }
+  
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ordersSection {
+    padding: 1.5rem;
+  }
+  
+  .orderCard {
+    padding: 1.25rem;
+  }
+  
+  .otpInput {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    width: 120px;
+  }
+}

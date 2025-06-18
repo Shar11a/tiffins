@@ -1,0 +1,344 @@
+.whatsappReviews {
+  padding: 5rem 0;
+  background: #f5ebe0;
+  position: relative;
+  overflow: hidden;
+}
+
+.whatsappReviews::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -15%;
+  width: 40%;
+  height: 140%;
+  background: rgba(37, 211, 102, 0.03);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.reviewsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+
+.reviewCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  position: relative;
+  border: 1px solid rgba(37, 211, 102, 0.1);
+}
+
+.reviewCard.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reviewCard:hover {
+  transform: translateY(-5px) rotate(0deg) !important;
+  box-shadow: 0 12px 40px rgba(37, 211, 102, 0.15);
+}
+
+.whatsappHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(37, 211, 102, 0.1);
+}
+
+.whatsappLogo {
+  width: 32px;
+  height: 32px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.senderName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.messageContent {
+  margin-bottom: 1rem;
+}
+
+.textMessage {
+  background: #E8F5E8;
+  padding: 1rem;
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  position: relative;
+}
+
+.textMessage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 12px 0;
+  border-color: transparent #E8F5E8 transparent transparent;
+}
+
+.messageText {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.voiceMessage {
+  background: #E8F5E8;
+  padding: 1rem;
+  border-radius: 12px;
+  border-top-left-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.voiceMessage::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 8px 12px 0;
+  border-color: transparent #E8F5E8 transparent transparent;
+}
+
+.playButton {
+  width: 32px;
+  height: 32px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.playButton:hover {
+  background: #128C7E;
+  transform: scale(1.1);
+}
+
+.voiceWave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.waveBar {
+  width: 3px;
+  background: #25D366;
+  border-radius: 2px;
+  animation: waveAnimation 1.5s ease-in-out infinite;
+}
+
+.waveBar:nth-child(1) { height: 8px; animation-delay: 0s; }
+.waveBar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+.waveBar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+.waveBar:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+.waveBar:nth-child(5) { height: 10px; animation-delay: 0.4s; }
+
+@keyframes waveAnimation {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.5); }
+}
+
+.voiceDuration {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #25D366;
+  font-family: 'Poppins', sans-serif;
+}
+
+.messageFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.6;
+}
+
+.deliveryStatus {
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .whatsappReviews {
+    padding: 4rem 0;
+  }
+  
+  .container {
+    padding: 0 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .header {
+    margin-bottom: 3rem;
+  }
+  
+  .reviewsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .reviewCard {
+    padding: 1.25rem;
+    transform: rotate(0deg) !important;
+  }
+  
+  .reviewCard:hover {
+    transform: translateY(-3px) rotate(0deg) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .reviewCard {
+    padding: 1rem;
+  }
+  
+  .whatsappHeader {
+    gap: 0.5rem;
+  }
+  
+  .whatsappLogo {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .senderName {
+    font-size: 0.9rem;
+  }
+  
+  .messageText {
+    font-size: 0.9rem;
+  }
+  
+  .textMessage,
+  .voiceMessage {
+    padding: 0.75rem;
+  }
+  
+  .playButton {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .voiceDuration {
+    font-size: 0.8rem;
+  }
+  
+  .timestamp {
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reviewsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .reviewsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}

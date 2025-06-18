@@ -1,0 +1,453 @@
+.deliveryPreview {
+  padding: 5rem 0;
+  background: #fef6e4;
+  position: relative;
+  overflow: hidden;
+}
+
+.deliveryPreview::before {
+  content: '';
+  position: absolute;
+  top: -15%;
+  right: -20%;
+  width: 35%;
+  height: 130%;
+  background: rgba(214, 40, 40, 0.03);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.mapContent {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+
+.mapContent.slideUp {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mapContainer {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  border: 3px solid #ffffff;
+}
+
+.mapImage {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+}
+
+.mapOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.deliveryPin {
+  position: absolute;
+  top: 45%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+}
+
+.pinIcon {
+  position: relative;
+  z-index: 3;
+  font-size: 2rem;
+  background: #d62828;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.4);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.pinPulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(214, 40, 40, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+.statusBadge {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #d62828;
+  padding: 0.75rem 1.25rem;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  font-family: 'Poppins', sans-serif;
+}
+
+.statusIcon {
+  font-size: 1.1rem;
+  animation: pulse-icon 2s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.featureContent {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out 0.3s;
+}
+
+.featureContent.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.previewCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(214, 40, 40, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(214, 40, 40, 0.1);
+}
+
+.cardIcon {
+  font-size: 2rem;
+  background: #d62828;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+}
+
+.cardTitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fef6e4;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  background: #f5ebe0;
+  transform: translateX(5px);
+}
+
+.featureIcon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.featureText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.liveStatus {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f5ebe0;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  background: #25D366;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.liveText {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #25D366;
+  font-family: 'Poppins', sans-serif;
+}
+
+.etaDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.etaLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+.etaTime {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d62828;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ctaButton {
+  width: 100%;
+  background: #d62828;
+  color: white;
+  border: none;
+  padding: 1.2rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.ctaButton:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(214, 40, 40, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .deliveryPreview {
+    padding: 4rem 0;
+  }
+  
+  .container {
+    padding: 0 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .header {
+    margin-bottom: 3rem;
+  }
+  
+  .content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+  
+  .mapImage {
+    height: 300px;
+  }
+  
+  .deliveryPin {
+    top: 40%;
+    left: 50%;
+  }
+  
+  .statusBadge {
+    position: static;
+    margin-bottom: 1rem;
+    display: inline-flex;
+  }
+  
+  .previewCard {
+    padding: 1.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .cardHeader {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .liveStatus {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .mapImage {
+    height: 250px;
+  }
+  
+  .statusBadge {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .previewCard {
+    padding: 1.25rem;
+  }
+  
+  .cardIcon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.8rem;
+  }
+  
+  .cardTitle {
+    font-size: 1.2rem;
+  }
+  
+  .feature {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .featureIcon {
+    font-size: 1.2rem;
+  }
+  
+  .featureText {
+    font-size: 0.9rem;
+  }
+  
+  .ctaButton {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content {
+    gap: 5rem;
+  }
+  
+  .mapImage {
+    height: 450px;
+  }
+}

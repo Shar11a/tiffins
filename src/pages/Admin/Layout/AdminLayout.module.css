@@ -1,0 +1,536 @@
+.adminLayout {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background: #f5ebe0;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #d62828;
+  color: #ffffff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  overflow-y: auto;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+/* Sidebar Header */
+.sidebarHeader {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.logoIcon {
+  font-size: 1.8rem;
+  background: rgba(255, 255, 255, 0.2);
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.logoText {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.logoTagline {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 0.8;
+  font-family: 'Poppins', sans-serif;
+  margin-left: 0.25rem;
+}
+
+/* Navigation */
+.navigation {
+  padding: 1.5rem 0;
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  margin: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  position: relative;
+  border-radius: 0;
+}
+
+.navLink::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.navLink:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(5px);
+}
+
+.navLink:hover::before {
+  background: #ffffff;
+}
+
+.navLink.active {
+  background: #f5ebe0;
+  color: #d62828;
+  font-weight: 600;
+}
+
+.navLink.active::before {
+  background: #d62828;
+}
+
+.navIcon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.navText {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;
+  margin-left: 250px;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent.expanded {
+  margin-left: 0;
+}
+
+/* Top Bar */
+.topBar {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(214, 40, 40, 0.1);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobileMenuButton {
+  display: none;
+  background: #f5ebe0;
+  border: 2px solid #d62828;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  color: #d62828;
+}
+
+.mobileMenuButton:hover {
+  background: #d62828;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+}
+
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: #f5ebe0;
+  border-radius: 20px;
+  border: 1px solid rgba(214, 40, 40, 0.1);
+}
+
+.userAvatar {
+  font-size: 1.2rem;
+  background: #d62828;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userName {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.logoutButton {
+  background: transparent;
+  border: 2px solid #d62828;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: #d62828;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoutButton:hover {
+  background: #d62828;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Content Area */
+.contentArea {
+  flex: 1;
+  background: #ffffff;
+  margin: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(214, 40, 40, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.contentWrapper {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Mobile Overlay */
+.mobileOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .mainContent {
+    margin-left: 0;
+  }
+  
+  .mobileMenuButton {
+    display: flex;
+  }
+  
+  .contentArea {
+    margin: 1rem;
+  }
+  
+  .contentWrapper {
+    padding: 1.5rem;
+  }
+  
+  .topBar {
+    padding: 1rem 1.5rem;
+  }
+  
+  .pageTitle {
+    font-size: 1.3rem;
+  }
+  
+  .userInfo {
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .userName {
+    display: none;
+  }
+  
+  .logoutButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBar {
+    padding: 0.75rem 1rem;
+  }
+  
+  .pageTitle {
+    font-size: 1.2rem;
+  }
+  
+  .contentArea {
+    margin: 0.75rem;
+  }
+  
+  .contentWrapper {
+    padding: 1.25rem;
+  }
+  
+  .sidebarHeader {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .logoText {
+    font-size: 1.2rem;
+  }
+  
+  .logoIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+  }
+  
+  .navLink {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .navIcon {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBar {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .pageTitle {
+    font-size: 1.1rem;
+  }
+  
+  .contentArea {
+    margin: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  .contentWrapper {
+    padding: 1rem;
+  }
+  
+  .mobileMenuButton {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+  }
+  
+  .userAvatar {
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+  }
+  
+  .logoutButton {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .sidebarHeader {
+    padding: 1.25rem 1rem;
+  }
+  
+  .logoText {
+    font-size: 1.1rem;
+  }
+  
+  .logoIcon {
+    width: 35px;
+    height: 35px;
+    font-size: 1.4rem;
+  }
+  
+  .logoTagline {
+    font-size: 0.75rem;
+  }
+  
+  .navLink {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .navIcon {
+    font-size: 1.1rem;
+    width: 20px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .sidebar {
+    border-right: 2px solid #ffffff;
+  }
+  
+  .navLink,
+  .mobileMenuButton,
+  .logoutButton {
+    border: 1px solid currentColor;
+  }
+  
+  .contentArea {
+    border: 2px solid #2b2b2b;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .mainContent,
+  .navLink,
+  .mobileMenuButton,
+  .logoutButton {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .navLink:hover,
+  .mobileMenuButton:hover,
+  .logoutButton:hover {
+    transform: none;
+  }
+  
+  .mobileOverlay {
+    animation: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.navLink:focus,
+.mobileMenuButton:focus,
+.logoutButton:focus {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.navLink.active:focus {
+  outline-color: #d62828;
+}
+
+/* Scrollbar styling for sidebar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Content area scrollbar */
+.contentWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.contentWrapper::-webkit-scrollbar-track {
+  background: #f5ebe0;
+}
+
+.contentWrapper::-webkit-scrollbar-thumb {
+  background: rgba(214, 40, 40, 0.3);
+  border-radius: 4px;
+}
+
+.contentWrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(214, 40, 40, 0.5);
+}

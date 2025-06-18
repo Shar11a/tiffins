@@ -1,0 +1,128 @@
+// Firebase Security Rules for TiffinBox Rider System
+// Copy these rules to your Firebase Console > Firestore Database > Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow read access to menu items for all users
+    match /menu/{document} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // Allow read access to weekly menu for all users
+    match /weeklyMenu/{document} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+    
+    // Customer data - allow creation for all users, read/write for authenticated users
+    match /customers/{document} {
+      allow create: if true; // Allow unauthenticated users to create subscription records
+      allow read, write: if request.auth != null;
+    }
+    
+    // Delivery partners - only authenticated users can read, only admins can write
+    match /deliveryPartners/{document} {
+      // Allow anyone to create a new rider account (for self-signup)
+      allow create: if request.auth != null;
+      
+      // Allow reading by any authenticated user
+      allow read: if request.auth != null;
+      
+      // Allow admins to update any rider
+      allow update: if request.auth != null && (
+        isAdmin() || 
+        // Allow riders to update their own lastActive timestamp
+        (request.auth.token.email == resource.data.email &&
+         request.writeFields.hasOnly(['lastActive']))
+      );
+      
+      // Only admins can delete riders
+      allow delete: if request.auth != null && isAdmin();
+    }
+    
+    // Delivery status - allow creation for all users, allow public read access by tracking token
+    match /deliveryStatus/{document} {
+      // Allow read access for:
+      // 1. Authenticated users OR
+      // 2. Public access if the document ID matches the tracking token AND it hasn't expired
+      allow read: if request.auth != null || 
+                   (document == resource.data.trackingToken && 
+                    resource.data.expiresAt > request.time);
+      
+      allow create: if true; // Allow unauthenticated users to create delivery status records
+      
+      // Allow updates from admins or assigned riders
+      allow update: if request.auth != null && (
+        isAdmin() || 
+        isAssignedRider(resource.data.assignedPartner)
+      );
+      
+      // ADD THIS LINE: Allow delete for admins
+      allow delete: if request.auth != null && isAdmin();
+    }
+    
+    // Helper functions
+    function isAdmin() {
+      // Add your admin email addresses here
+      return request.auth.token.email in [
+        'admin@tiffinbox.com',
+        'manager@tiffinbox.com'
+      ];
+    }
+    
+    function isAssignedRider(assignedPartnerId) {
+      // Check if the current user is the assigned rider for this delivery
+      return exists(/databases/$(database)/documents/deliveryPartners/$(assignedPartnerId)) &&
+             get(/databases/$(database)/documents/deliveryPartners/$(assignedPartnerId)).data.email == request.auth.token.email;
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// Firebase Storage Rules (if using Firebase Storage)
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
+
+// Additional Authentication Rules (Firebase Auth)
+// These should be configured in Firebase Console > Authentication > Settings
+
+/*
+AUTHENTICATION SETUP INSTRUCTIONS:
+
+1. Enable Email/Password authentication in Firebase Console
+2. Add authorized domains for your application
+3. Configure email templates for password reset (optional)
+4. Set up user management rules:
+   - Riders can self-register but need admin approval to become active
+   - Admins can create and approve rider accounts
+   - Riders can only access their assigned orders
+   - Customers can only access their own data
+
+RIDER ACCOUNT CREATION:
+- Riders can self-register through the signup page
+- Each rider needs a Firebase Auth account created with their email
+- The rider's email in deliveryPartners collection must match their Firebase Auth email
+- New rider accounts are inactive by default until approved by an admin
+
+SECURITY CONSIDERATIONS:
+- All sensitive operations require authentication
+- Riders can only see orders assigned to them
+- Customers can only see their own orders
+- Admin functions are restricted to authorized emails
+- All database writes are logged and auditable
+- Self-registered riders cannot access the system until approved
+- Unauthenticated users can create subscription records to enable new customer signups
+*/

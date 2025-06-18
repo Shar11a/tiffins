@@ -1,0 +1,632 @@
+.deliveryFooterStatus {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #2b2b2b;
+  color: #ffffff;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  border-top: 2px solid #d62828;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.6s ease-out;
+}
+
+.deliveryFooterStatus.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  gap: 2rem;
+}
+
+/* Status Section */
+.statusSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.statusIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconEmoji {
+  font-size: 2rem;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.iconEmoji.moving {
+  animation: vehicleMove 3s ease-in-out infinite;
+}
+
+@keyframes vehicleMove {
+  0%, 100% { 
+    transform: translateX(0px) rotate(0deg); 
+  }
+  25% { 
+    transform: translateX(3px) rotate(1deg); 
+  }
+  75% { 
+    transform: translateX(-3px) rotate(-1deg); 
+  }
+}
+
+.statusContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statusLabel {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.statusSubtext {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #ffffff;
+  opacity: 0.8;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ETA Section */
+.etaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.etaBadge {
+  background: #d62828;
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.etaIcon {
+  font-size: 1.3rem;
+  animation: pulse-eta 2s ease-in-out infinite;
+}
+
+@keyframes pulse-eta {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.etaContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.etaLabel {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.9;
+  font-family: 'Poppins', sans-serif;
+}
+
+.etaTime {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.etaDetails {
+  text-align: center;
+}
+
+.etaExact {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Support Section */
+.supportSection {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.supportButton {
+  background: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.supportButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #d62828;
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.supportButton:hover::before {
+  left: 0;
+}
+
+.supportButton:hover {
+  border-color: #d62828;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.3);
+}
+
+.supportButton:hover .supportText {
+  text-decoration: underline;
+  text-decoration-color: #d62828;
+}
+
+.supportIcon {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.supportButton:hover .supportIcon {
+  transform: scale(1.1);
+}
+
+.supportText {
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 2rem;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideInModal 0.3s ease-out;
+}
+
+@keyframes slideInModal {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1rem 2rem;
+  border-bottom: 1px solid #f5ebe0;
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.closeButton {
+  background: #f5ebe0;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  color: #2b2b2b;
+}
+
+.closeButton:hover {
+  background: #d62828;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.modalContent {
+  padding: 1rem 2rem 2rem 2rem;
+}
+
+.supportOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.supportOption {
+  background: #fef6e4;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.supportOption:hover {
+  background: #f5ebe0;
+  border-color: #d62828;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(214, 40, 40, 0.1);
+}
+
+.optionIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.optionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.optionTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.optionSubtext {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.7;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+  
+  .statusSection,
+  .etaSection,
+  .supportSection {
+    flex: none;
+    width: 100%;
+  }
+  
+  .statusSection {
+    justify-content: center;
+  }
+  
+  .etaSection {
+    align-items: center;
+  }
+  
+  .supportSection {
+    justify-content: center;
+  }
+  
+  .etaBadge {
+    padding: 0.6rem 1.25rem;
+  }
+  
+  .statusLabel {
+    font-size: 1.1rem;
+  }
+  
+  .statusSubtext {
+    font-size: 0.85rem;
+  }
+  
+  .etaTime {
+    font-size: 1rem;
+  }
+  
+  .supportButton {
+    padding: 0.6rem 1rem;
+  }
+  
+  .supportText {
+    font-size: 0.95rem;
+  }
+  
+  .modalOverlay {
+    padding: 1rem;
+  }
+  
+  .modalHeader {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+  }
+  
+  .modalContent {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .modalTitle {
+    font-size: 1.2rem;
+  }
+  
+  .supportOption {
+    padding: 1rem;
+  }
+  
+  .optionIcon {
+    font-size: 1.8rem;
+  }
+  
+  .optionTitle {
+    font-size: 1rem;
+  }
+  
+  .optionSubtext {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .content {
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+  }
+  
+  .iconEmoji {
+    font-size: 1.8rem;
+  }
+  
+  .statusLabel {
+    font-size: 1rem;
+  }
+  
+  .statusSubtext {
+    font-size: 0.8rem;
+  }
+  
+  .etaBadge {
+    padding: 0.5rem 1rem;
+    gap: 0.5rem;
+  }
+  
+  .etaIcon {
+    font-size: 1.2rem;
+  }
+  
+  .etaLabel {
+    font-size: 0.75rem;
+  }
+  
+  .etaTime {
+    font-size: 0.95rem;
+  }
+  
+  .etaExact {
+    font-size: 0.8rem;
+  }
+  
+  .supportButton {
+    padding: 0.5rem 0.8rem;
+    gap: 0.4rem;
+  }
+  
+  .supportIcon {
+    font-size: 1rem;
+  }
+  
+  .supportText {
+    font-size: 0.9rem;
+  }
+  
+  .modalHeader {
+    padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+  }
+  
+  .modalContent {
+    padding: 0.75rem 1.25rem 1.25rem 1.25rem;
+  }
+  
+  .modalTitle {
+    font-size: 1.1rem;
+  }
+  
+  .closeButton {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+  
+  .supportOption {
+    padding: 0.8rem;
+    gap: 0.75rem;
+  }
+  
+  .optionIcon {
+    font-size: 1.6rem;
+  }
+  
+  .optionTitle {
+    font-size: 0.95rem;
+  }
+  
+  .optionSubtext {
+    font-size: 0.8rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .deliveryFooterStatus {
+    border-top: 3px solid #ffffff;
+  }
+  
+  .etaBadge,
+  .supportButton,
+  .supportOption {
+    border: 2px solid currentColor;
+  }
+  
+  .modal {
+    border: 2px solid #2b2b2b;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .deliveryFooterStatus {
+    transition: opacity 0.3s ease;
+  }
+  
+  .iconEmoji.moving,
+  .etaIcon,
+  .shimmer {
+    animation: none;
+  }
+  
+  .supportButton,
+  .supportOption,
+  .closeButton {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .supportButton:hover,
+  .supportOption:hover,
+  .closeButton:hover {
+    transform: none;
+  }
+  
+  .modalOverlay,
+  .modal {
+    animation: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.supportButton:focus,
+.closeButton:focus,
+.supportOption:focus {
+  outline: 2px solid #d62828;
+  outline-offset: 2px;
+}
+
+/* Ensure footer doesn't overlap content */
+body {
+  padding-bottom: 80px;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-bottom: 100px;
+  }
+}

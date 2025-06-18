@@ -1,0 +1,558 @@
+.riderSignup {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #1e40af 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.riderSignup::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -20%;
+  width: 40%;
+  height: 140%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Home Button */
+.homeButtonContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.homeButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.homeButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Signup Card */
+.signupCard {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signupCard:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 12px 50px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.logoIcon {
+  font-size: 2rem;
+  background: #3b82f6;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.logoText {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #3b82f6;
+  opacity: 0.8;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.taglineIcon {
+  font-size: 1rem;
+}
+
+/* Form */
+.signupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldGroup.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.fieldLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.labelIcon {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.fieldInput,
+.fieldSelect {
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.9rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fieldInput:focus,
+.fieldSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.fieldInput::placeholder,
+.fieldSelect::placeholder {
+  color: #2b2b2b;
+  opacity: 0.5;
+}
+
+.passwordRequirements {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 0.25rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.termsGroup {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox {
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+  margin-top: 0.2rem;
+}
+
+.termsText {
+  font-size: 0.85rem;
+  color: #2b2b2b;
+  line-height: 1.5;
+  font-family: 'Poppins', sans-serif;
+}
+
+.termsLink {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+/* Error Message */
+.errorMessage {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.errorIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Submit Button */
+.submitButton {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 1.25rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.submitButton:disabled {
+  background: #cccccc;
+  color: #888888;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.submitButton:disabled::before {
+  display: none;
+}
+
+/* Loading State */
+.submitButton:disabled:not(.error) {
+  background: #3b82f6;
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.submitButton:disabled:not(.error)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f8fafc;
+}
+
+.loginLink {
+  font-size: 0.9rem;
+  color: #2b2b2b;
+  font-family: 'Poppins', sans-serif;
+}
+
+.loginLinkText {
+  color: #3b82f6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.loginLinkText:hover {
+  text-decoration: underline;
+}
+
+/* Success Message */
+.successMessage {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #059669;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.successIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .riderSignup {
+    padding: 1.5rem 1rem;
+  }
+  
+  .signupCard {
+    padding: 2rem;
+  }
+  
+  .logoText {
+    font-size: 1.6rem;
+  }
+  
+  .logoIcon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.8rem;
+  }
+  
+  .tagline {
+    font-size: 0.85rem;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .fieldInput,
+  .fieldSelect {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .submitButton {
+    padding: 1.1rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .riderSignup {
+    padding: 1rem 0.5rem;
+  }
+  
+  .container {
+    max-width: 100%;
+  }
+  
+  .signupCard {
+    padding: 1.5rem;
+  }
+  
+  .logoText {
+    font-size: 1.4rem;
+  }
+  
+  .logoIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+  }
+  
+  .tagline {
+    font-size: 0.8rem;
+  }
+  
+  .fieldLabel {
+    font-size: 0.85rem;
+  }
+  
+  .fieldInput,
+  .fieldSelect {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .submitButton {
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .errorMessage,
+  .successMessage {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .homeButton {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .signupCard,
+  .fieldInput,
+  .fieldSelect,
+  .submitButton {
+    border: 2px solid currentColor;
+  }
+  
+  .errorMessage {
+    border: 2px solid #dc2626;
+  }
+  
+  .successMessage {
+    border: 2px solid #059669;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .signupCard {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .fieldInput,
+  .fieldSelect,
+  .submitButton {
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+  
+  .signupCard:hover,
+  .submitButton:hover {
+    transform: none;
+  }
+  
+  .submitButton::before {
+    display: none;
+  }
+  
+  .errorMessage,
+  .successMessage {
+    animation: none;
+  }
+}
+
+/* Focus styles for accessibility */
+.fieldInput:focus,
+.fieldSelect:focus,
+.submitButton:focus,
+.checkbox:focus,
+.termsLink:focus,
+.loginLinkText:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}

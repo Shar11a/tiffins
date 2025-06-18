@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: #2b2b2b;
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-top: 130px; /* Navbar (70px) + Banner (60px) */
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+@media (max-width: 968px) {
+  body {
+    padding-top: 145px; /* Navbar (65px) + banner (80px) */
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 135px; /* Navbar (65px) + banner (70px) */
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 120px; /* Navbar (60px) + banner (60px) */
+  }
+}

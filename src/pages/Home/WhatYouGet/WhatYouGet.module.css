@@ -1,0 +1,243 @@
+.whatYouGet {
+  padding: 5rem 0;
+  background: #f5ebe0;
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #2b2b2b;
+  opacity: 0.8;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.mealsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.mealCard {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.mealCard.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mealCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(214, 40, 40, 0.15);
+}
+
+.imageContainer {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+}
+
+.mealImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.mealCard:hover .mealImage {
+  transform: scale(1.08);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mealCard:hover .overlay {
+  opacity: 1;
+}
+
+.overlayContent {
+  color: white;
+}
+
+.mealName {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.mealTag {
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: #d62828;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.cardContent {
+  padding: 1.5rem;
+}
+
+.mealTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 0.5rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tag {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #d62828;
+  background: rgba(214, 40, 40, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .mealsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+  
+  .imageContainer {
+    height: 220px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mealsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .imageContainer {
+    height: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .whatYouGet {
+    padding: 4rem 0;
+  }
+  
+  .container {
+    padding: 0 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .header {
+    margin-bottom: 3rem;
+  }
+  
+  .mealsGrid {
+    gap: 1.5rem;
+  }
+  
+  .imageContainer {
+    height: 200px;
+  }
+  
+  .cardContent {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .mealsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .imageContainer {
+    height: 220px;
+  }
+  
+  .mealTitle {
+    font-size: 1rem;
+  }
+  
+  .tag {
+    font-size: 0.8rem;
+  }
+}
