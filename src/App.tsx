@@ -18,6 +18,8 @@ import DeliveryPartners from './pages/Admin/DeliveryPartners/DeliveryPartners'
 import RiderLogin from './pages/Rider/Login/RiderLogin'
 import RiderSignup from './pages/Rider/Signup/RiderSignup'
 import RiderDashboard from './pages/Rider/Dashboard/RiderDashboard'
+import PaymentPage from './pages/Payment/PaymentPage'
+import SuccessPage from './pages/Success/SuccessPage'
 
 function App() {
   return (
@@ -50,6 +52,10 @@ function App() {
             <Route path="delivery" element={<DeliveryTable />} />
             <Route path="partners" element={<DeliveryPartners />} />
           </Route>
+          
+          {/* Payment and Success routes (no layout) */}
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/success" element={<SuccessPage />} />
           
           {/* Main app routes (with navbar and Glasgow banner) */}
           <Route path="/*" element={

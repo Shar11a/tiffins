@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { addCustomer } from '../../../services/firestore'
+import { createStripeCheckoutSession } from '../../../services/stripeService'
 import { auth } from '../../../firebase/config'
 import styles from './SubscriptionForm.module.css'
 
@@ -176,26 +176,29 @@ const SubscriptionForm: React.FC = () => {
         finalPrice = Math.round(finalPrice * 0.8)
       }
       
-      // Navigate to payment page with form data
-      navigate('/payment', {
-        state: {
-          paymentData: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.contactNumber,
-            address: fullAddress,
-            deliverySlot: formData.deliverySlot,
-            planType: formData.planType,
-            studentStatus: formData.studentStatus,
-            subscriptionType: formData.subscriptionType,
-            amount: finalPrice,
-            currency: 'gbp'
-          }
-        }
+      // Redirect to Stripe Checkout
+      const result = await createStripeCheckoutSession({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.contactNumber,
+        address: fullAddress,
+        deliverySlot: formData.deliverySlot,
+        planType: formData.planType,
+        studentStatus: formData.studentStatus,
+        subscriptionType: formData.subscriptionType,
+        amount: finalPrice,
+        currency: 'gbp'
       })
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create checkout session')
+      }
+      
+      // The redirect happens in the createStripeCheckoutSession function
+      // No need to do anything else here
     } catch (error) {
       console.error('Error submitting subscription:', error)
-      alert('Failed to submit subscription. Please try again.')
+      alert('Failed to process payment. Please try again.')
       setIsSubmitting(false)
     }
   }
