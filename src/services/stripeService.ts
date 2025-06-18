@@ -1,12 +1,10 @@
-import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import app from '../firebase/config';
-
-// Initialize Firebase Functions
-const functions = getFunctions(app);
+import { loadStripe } from '@stripe/stripe-js';
 
 // Initialize Stripe with the key from environment variables
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY);
+
+// Firebase function base URL - replace with your actual project ID
+const FIREBASE_FUNCTIONS_BASE_URL = 'https://us-central1-tiffinbox-564cc.cloudfunctions.net';
 
 export interface PaymentData {
   name: string;
@@ -23,6 +21,7 @@ export interface PaymentData {
 
 /**
  * Creates a Stripe checkout session and redirects to the Stripe-hosted checkout page
+ * Using HTTP endpoint instead of callable function to avoid CORS issues
  */
 export const createStripeCheckoutSession = async (paymentData: PaymentData): Promise<{ success: boolean; error?: string }> => {
   try {
@@ -35,25 +34,34 @@ export const createStripeCheckoutSession = async (paymentData: PaymentData): Pro
     // Get the current user ID if available
     const userId = localStorage.getItem('userId') || null;
 
-    // Call the Firebase function to create a checkout session
-    const createCheckoutSessionFn = httpsCallable(functions, 'createCheckoutSession');
-    const response = await createCheckoutSessionFn({
-      planType: paymentData.planType,
-      userEmail: paymentData.email,
-      price: paymentData.amount,
-      userId,
-      customerData: {
-        name: paymentData.name,
-        phone: paymentData.phone,
-        address: paymentData.address,
-        deliverySlot: paymentData.deliverySlot,
-        studentStatus: paymentData.studentStatus,
-        subscriptionType: paymentData.subscriptionType
-      }
+    // Call the Firebase HTTP function to create a checkout session
+    const response = await fetch(`${FIREBASE_FUNCTIONS_BASE_URL}/createCheckoutSessionHttp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        planType: paymentData.planType,
+        userEmail: paymentData.email,
+        price: paymentData.amount,
+        userId,
+        customerData: {
+          name: paymentData.name,
+          phone: paymentData.phone,
+          address: paymentData.address,
+          deliverySlot: paymentData.deliverySlot,
+          studentStatus: paymentData.studentStatus,
+          subscriptionType: paymentData.subscriptionType
+        }
+      })
     });
 
-    // Extract the session ID from the response
-    const { sessionId } = (response.data as { sessionId: string });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to create checkout session');
+    }
+
+    const { sessionId } = await response.json();
 
     if (!sessionId) {
       throw new Error('Failed to create checkout session');
@@ -78,6 +86,7 @@ export const createStripeCheckoutSession = async (paymentData: PaymentData): Pro
 
 /**
  * Verifies a completed Stripe checkout session
+ * Using HTTP endpoint instead of callable function to avoid CORS issues
  */
 export const verifyStripeCheckoutSession = async (sessionId: string): Promise<{
   success: boolean;
@@ -86,21 +95,31 @@ export const verifyStripeCheckoutSession = async (sessionId: string): Promise<{
   error?: string;
 }> => {
   try {
-    // Call the Firebase function to verify the checkout session
-    const verifyCheckoutSessionFn = httpsCallable(functions, 'verifyCheckoutSession');
-    const response = await verifyCheckoutSessionFn({ sessionId });
-
-    const { success, trackingToken, orderId } = (response.data as {
-      success: boolean;
-      trackingToken?: string;
-      orderId?: string;
+    // Call the Firebase HTTP function to verify the checkout session
+    const response = await fetch(`${FIREBASE_FUNCTIONS_BASE_URL}/verifyCheckoutSessionHttp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ sessionId })
     });
 
-    if (!success) {
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Payment verification failed');
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
       throw new Error('Payment verification failed');
     }
 
-    return { success, trackingToken, orderId };
+    return { 
+      success: true, 
+      trackingToken: data.trackingToken, 
+      orderId: data.orderId 
+    };
   } catch (error) {
     console.error('Error verifying checkout session:', error);
     return {
