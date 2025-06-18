@@ -1,7 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || functions.config().stripe.key);
-const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -66,7 +65,15 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 
 // HTTP version of createCheckoutSession with CORS support
 exports.createCheckoutSessionHttp = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
+  // Initialize cors with dynamic origin configuration
+  const corsHandler = require('cors')({
+    origin: functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  });
+
+  corsHandler(req, res, async () => {
     try {
       if (req.method !== 'POST') {
         res.status(405).send('Method Not Allowed');
@@ -268,7 +275,15 @@ exports.verifyCheckoutSession = functions.https.onCall(async (data, context) => 
 
 // HTTP version of verifyCheckoutSession with CORS support
 exports.verifyCheckoutSessionHttp = functions.https.onRequest((req, res) => {
-  cors(req, res, async () => {
+  // Initialize cors with dynamic origin configuration
+  const corsHandler = require('cors')({
+    origin: functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+  });
+
+  corsHandler(req, res, async () => {
     try {
       if (req.method !== 'POST') {
         res.status(405).send('Method Not Allowed');
