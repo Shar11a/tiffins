@@ -31,11 +31,12 @@ service cloud.firestore {
     // ---------------
     
     // Customer data - allow creation for all users, read/write for authenticated users
+    // IMPORTANT: This assumes customer documents store a 'userId' field matching request.auth.uid
     match /customers/{document} {
       allow create: if true; // Allow unauthenticated users to create subscription records
       allow read, write: if request.auth != null && (
-        // Owner can read/write their own data
-        request.auth.uid == document ||
+        // Owner can read/write their own data (assuming 'userId' field in document)
+        resource.data.userId == request.auth.uid ||
         // Admins can read/write all customer data
         isAdmin()
       );
@@ -58,16 +59,15 @@ service cloud.firestore {
     // ---------------
     
     // Payment history - strict rules
+    // Assumes payment records are created by a trusted backend (e.g., Cloud Function)
+    // or only by admins.
     match /paymentHistory/{paymentId} {
       // Users can read their own payments only
       allow read: if request.auth != null && 
                    resource.data.customerId == request.auth.uid;
       
-      // Only allow secure server operations or admins to write payment data
-      allow write: if request.auth != null && 
-                    (isAdmin() ||
-                     request.resource.data.source == 'server' && 
-                     request.resource.data.serverTimestamp == request.time);
+      // Only allow admins to write payment data (or a trusted backend via service account)
+      allow write: if request.auth != null && isAdmin();
       
       // Additional validation for payment amounts to prevent fraud
       allow create: if request.auth != null && 
@@ -97,15 +97,15 @@ service cloud.firestore {
     }
     
     // Subscription payments links - join table
+    // Assumes these links are created by a trusted backend (e.g., Cloud Function)
+    // or only by admins.
     match /subscriptionPayments/{linkId} {
       // Allow users to read their own subscription payments
       allow read: if request.auth != null && 
                    get(/databases/$(database)/documents/subscriptions/$(resource.data.subscriptionId)).data.customerId == request.auth.uid;
       
-      // Only allow server operations or admins to create payment links
-      allow create: if request.auth != null && 
-                     (isAdmin() ||
-                      request.resource.data.source == 'server');
+      // Only allow admins to create payment links (or a trusted backend via service account)
+      allow create: if request.auth != null && isAdmin();
                       
       // No updates or deletes allowed to preserve payment history integrity
       allow update, delete: if false;
@@ -115,13 +115,16 @@ service cloud.firestore {
     // DELIVERY RULES
     // ---------------
     
-    // Delivery partners - only authenticated users can read, only admins can write
+    // Delivery partners - only authenticated users can read their own data or if admin
     match /deliveryPartners/{document} {
       // Allow anyone to create a new rider account (for self-signup)
       allow create: if request.auth != null;
       
-      // Allow reading by any authenticated user
-      allow read: if request.auth != null;
+      // Allow reading by any authenticated user if it's their own data, or if admin
+      allow read: if request.auth != null && (
+        isAdmin() ||
+        request.auth.token.email == resource.data.email
+      );
       
       // Allow admins to update any rider
       allow update: if request.auth != null && (
@@ -156,7 +159,9 @@ service cloud.firestore {
       allow delete: if request.auth != null && isAdmin();
     }
     
-    // Detailed delivery collection - secured by role
+    // Detailed delivery collection (if used, otherwise remove)
+    // This collection is not currently used in the provided application code.
+    // If its purpose is distinct from 'deliveryStatus', define it clearly.
     match /delivery/{deliveryId} {
       // Customers can see their own deliveries
       allow read: if request.auth != null && 
@@ -206,15 +211,9 @@ service cloud.firestore {
 // Firebase Storage Rules
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null && (
-        // Allow admin users to write to any storage location
-        isStorageAdmin() ||
-        // Allow users to write to their own folder
-        request.auth.uid == userId
-      );
-    }
+    // General read access (if needed for public assets)
+    // If you have sensitive files, remove this and rely on specific path rules.
+    allow read: if true; 
     
     // User-specific storage area for profile photos and documents
     match /users/{userId}/{allPaths=**} {
@@ -237,6 +236,7 @@ service firebase.storage {
     }
   }
 }
+
 
 // Additional Authentication Rules (Firebase Auth)
 // These should be configured in Firebase Console > Authentication > Settings
