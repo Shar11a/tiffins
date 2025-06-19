@@ -6,6 +6,7 @@ import rajmaChawalImage from '../../../assets/rajma-chawal.png'
 import lambBiryaniImage from '../../../assets/lamb-biryani.png'
 import mixVegImage from '../../../assets/mix-veg.png'
 import chickenRiceImage from '../../../assets/chicken-rice.png'
+import alooMutterImage from '../../../assets/aloo-mutter-roti.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -59,9 +60,9 @@ const WhatYouGet: React.FC = () => {
     },
     {
       id: 5,
-      name: 'Aloo Mutter + Roti',
+      name: 'Aloo Mutter + Chapati',
       tag: 'Light & Healthy',
-      image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: alooMutterImage,
       alt: 'Aloo gobi sabzi with fresh roti'
     },
     {
