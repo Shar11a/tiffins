@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { subscribeToDeliveryByToken, DeliveryStatus } from '../../../services/firestore'
 import styles from './DeliveryMap.module.css'
+import deliveryTrackingImage from '../../../assets/delivery-tracking.jpg'
 
 interface DeliveryMapProps {
   trackingToken: string
@@ -97,7 +98,7 @@ const DeliveryMap: React.FC<DeliveryMapProps> = ({ trackingToken }) => {
               // Fallback Map Image
               <div className={styles.mapContainer}>
                 <img 
-                  src="https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                  src={deliveryTrackingImage}
                   alt="Delivery tracking map showing current location"
                   className={styles.mapImage}
                 />
