@@ -65,7 +65,6 @@ const Footer: React.FC = () => {
               <a href="/menu" className={styles.navLink}>Menu</a>
               <a href="/subscribe" className={styles.navLink}>Subscribe</a>
               <a href="/track" className={styles.navLink}>Track My Tiffin</a>
-              <a href="/admin" className={styles.navLink}>Admin Login</a>
             </nav>
           </div>
 

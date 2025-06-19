@@ -61,14 +61,6 @@ const Navbar: React.FC = () => {
           </div>
           
           <div className={styles.authSection}>
-            <NavLink
-              to="/admin/login"
-              className={({ isActive }) =>
-                `${styles.loginButton} ${isActive ? styles.active : ''}`
-              }
-            >
-              Admin
-            </NavLink>
             <div style={{ display: 'flex', gap: '10px' }}>
               <NavLink
                 to="/rider/login"
@@ -124,15 +116,6 @@ const Navbar: React.FC = () => {
           </div>
           
           <div className={styles.mobileAuthSection}>
-            <NavLink
-              to="/admin/login"
-              className={({ isActive }) =>
-                `${styles.mobileLoginButton} ${isActive ? styles.active : ''}`
-              }
-              onClick={closeMobileMenu}
-            >
-              Admin Login
-            </NavLink>
             <NavLink
               to="/rider/login"
               className={({ isActive }) =>
