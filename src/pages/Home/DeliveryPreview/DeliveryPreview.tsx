@@ -1,33 +1,33 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styles from './DeliveryPreview.module.css'
-import deliveryTrackingImage from '../../../assets/delivery-tracking.jpg'
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./DeliveryPreview.module.css";
+import deliveryPreview from "../../../assets/delivery-preview.png";
 
 const DeliveryPreview: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false)
-  const navigate = useNavigate()
+  const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true)
+          setIsVisible(true);
         }
       },
       { threshold: 0.1 }
-    )
+    );
 
-    const section = document.getElementById('delivery-preview')
+    const section = document.getElementById("delivery-preview");
     if (section) {
-      observer.observe(section)
+      observer.observe(section);
     }
 
-    return () => observer.disconnect()
-  }, [])
+    return () => observer.disconnect();
+  }, []);
 
   const handleSeeMyTiffin = () => {
-    navigate('/tracking')
-  }
+    navigate("/tracking");
+  };
 
   return (
     <section id="delivery-preview" className={styles.deliveryPreview}>
@@ -38,12 +38,16 @@ const DeliveryPreview: React.FC = () => {
             Never wonder where your meal is again 📍
           </p>
         </div>
-        
+
         <div className={styles.content}>
-          <div className={`${styles.mapContent} ${isVisible ? styles.slideUp : ''}`}>
+          <div
+            className={`${styles.mapContent} ${
+              isVisible ? styles.slideUp : ""
+            }`}
+          >
             <div className={styles.mapContainer}>
-              <img 
-                src={deliveryTrackingImage}
+              <img
+                src={deliveryPreview}
                 alt="Real-time delivery tracking map showing tiffin location"
                 className={styles.mapImage}
               />
@@ -54,23 +58,31 @@ const DeliveryPreview: React.FC = () => {
                 </div>
                 <div className={styles.statusBadge}>
                   <span className={styles.statusIcon}>⏱️</span>
-                  <span className={styles.statusText}>Tiffin is 5 mins away!</span>
+                  <span className={styles.statusText}>
+                    Tiffin is 5 mins away!
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          
-          <div className={`${styles.featureContent} ${isVisible ? styles.fadeIn : ''}`}>
+
+          <div
+            className={`${styles.featureContent} ${
+              isVisible ? styles.fadeIn : ""
+            }`}
+          >
             <div className={styles.previewCard}>
               <div className={styles.cardHeader}>
                 <div className={styles.cardIcon}>📦</div>
                 <h3 className={styles.cardTitle}>Delivery Tracker Preview</h3>
               </div>
-              
+
               <div className={styles.featureList}>
                 <div className={styles.feature}>
                   <span className={styles.featureIcon}>📍</span>
-                  <span className={styles.featureText}>Live location of your tiffin</span>
+                  <span className={styles.featureText}>
+                    Live location of your tiffin
+                  </span>
                 </div>
                 <div className={styles.feature}>
                   <span className={styles.featureIcon}>⏰</span>
@@ -82,10 +94,12 @@ const DeliveryPreview: React.FC = () => {
                 </div>
                 <div className={styles.feature}>
                   <span className={styles.featureIcon}>📊</span>
-                  <span className={styles.featureText}>Daily delivery history</span>
+                  <span className={styles.featureText}>
+                    Daily delivery history
+                  </span>
                 </div>
               </div>
-              
+
               <div className={styles.liveStatus}>
                 <div className={styles.statusIndicator}>
                   <div className={styles.liveDot}></div>
@@ -96,11 +110,8 @@ const DeliveryPreview: React.FC = () => {
                   <span className={styles.etaTime}>12:45 PM</span>
                 </div>
               </div>
-              
-              <button 
-                className={styles.ctaButton}
-                onClick={handleSeeMyTiffin}
-              >
+
+              <button className={styles.ctaButton} onClick={handleSeeMyTiffin}>
                 See My Tiffin
               </button>
             </div>
@@ -108,7 +119,7 @@ const DeliveryPreview: React.FC = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default DeliveryPreview
+export default DeliveryPreview;
