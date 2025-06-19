@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './StudentDiscount.module.css'
+import studentDiscountImage from '../../../assets/student-discount.png'
 
 const StudentDiscount: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -36,7 +37,7 @@ const StudentDiscount: React.FC = () => {
           <div className={`${styles.imageContent} ${isVisible ? styles.slideIn : ''}`}>
             <div className={styles.imageContainer}>
               <img 
-                src="https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=600"
+                src={studentDiscountImage}
                 alt="Happy student enjoying homestyle tiffin meal in hostel room"
                 className={styles.studentImage}
               />
