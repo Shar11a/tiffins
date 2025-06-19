@@ -4,6 +4,7 @@ import mutterPaneerImage from '../../../assets/mutter-paneer.png'
 import dalRiceImage from '../../../assets/dal-rice.png'
 import rajmaChawalImage from '../../../assets/rajma-chawal.png'
 import lambBiryaniImage from '../../../assets/lamb-biryani.png'
+import mixVegImage from '../../../assets/mix-veg.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -73,7 +74,7 @@ const WhatYouGet: React.FC = () => {
       id: 7,
       name: 'Mixed Veg + Chapati',
       tag: 'Daily Comfort',
-      image: 'https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: mixVegImage,
       alt: 'Mixed vegetable curry with soft chapati'
     }
   ]
