@@ -5,6 +5,7 @@ import dalRiceImage from '../../../assets/dal-rice.png'
 import rajmaChawalImage from '../../../assets/rajma-chawal.png'
 import lambBiryaniImage from '../../../assets/lamb-biryani.png'
 import mixVegImage from '../../../assets/mix-veg.png'
+import chickenRiceImage from '../../../assets/chicken-rice.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -67,7 +68,7 @@ const WhatYouGet: React.FC = () => {
       id: 6,
       name: 'Chicken Curry + Rice',
       tag: 'Non-Veg Special',
-      image: 'https://images.pexels.com/photos/2474658/pexels-photo-2474658.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: chickenRiceImage,
       alt: 'Homestyle chicken curry with basmati rice'
     },
     {
