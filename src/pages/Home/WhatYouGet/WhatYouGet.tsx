@@ -59,7 +59,7 @@ const WhatYouGet: React.FC = () => {
     },
     {
       id: 5,
-      name: 'Aloo Gobi + Roti',
+      name: 'Aloo Mutter + Roti',
       tag: 'Light & Healthy',
       image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=400',
       alt: 'Aloo gobi sabzi with fresh roti'
