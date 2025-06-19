@@ -97,7 +97,7 @@ const DeliveryMap: React.FC<DeliveryMapProps> = ({ trackingToken }) => {
               // Fallback Map Image
               <div className={styles.mapContainer}>
                 <img 
-                  src="https://images.pexels.com/photos/7876050/pexels-photo-7876050.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="https://images.pexels.com/photos/4393021/pexels-photo-4393021.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                   alt="Delivery tracking map showing current location"
                   className={styles.mapImage}
                 />
