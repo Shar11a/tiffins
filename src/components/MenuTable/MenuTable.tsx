@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getWeeklyMenu, WeeklyMeal } from '../../services/firestore'
 import styles from './MenuTable.module.css'
+import menuBackgroundPlaceholder from '../../assets/menu-background-placeholder.txt'
 
 const MenuTable: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)

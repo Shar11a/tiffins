@@ -1,0 +1,4 @@
+This is a placeholder for the menu background image.
+The actual image will be added later.
+
+The image will be used as a blurred background behind the weekly menu table on the menu page.
