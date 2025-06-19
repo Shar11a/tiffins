@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './WhatYouGet.module.css'
 import mutterPaneerImage from '../../../assets/mutter-paneer.png'
 import dalRiceImage from '../../../assets/dal-rice.png'
+import rajmaChawalImage from '../../../assets/rajma-chawal.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
