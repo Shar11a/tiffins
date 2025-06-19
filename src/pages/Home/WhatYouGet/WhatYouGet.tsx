@@ -3,6 +3,7 @@ import styles from './WhatYouGet.module.css'
 import mutterPaneerImage from '../../../assets/mutter-paneer.png'
 import dalRiceImage from '../../../assets/dal-rice.png'
 import rajmaChawalImage from '../../../assets/rajma-chawal.png'
+import lambBiryaniImage from '../../../assets/lamb-biryani.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -49,9 +50,9 @@ const WhatYouGet: React.FC = () => {
     },
     {
       id: 4,
-      name: 'Chole Bhature',
+      name: 'Lamb Biryani',
       tag: 'Weekend Special',
-      image: 'https://images.pexels.com/photos/5560748/pexels-photo-5560748.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: lambBiryaniImage,
       alt: 'Spicy chole with fluffy bhature bread'
     },
     {
