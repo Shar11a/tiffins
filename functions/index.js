@@ -65,66 +65,82 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context) => 
 
 // HTTP version of createCheckoutSession with CORS support
 exports.createCheckoutSessionHttp = functions.https.onRequest((req, res) => {
-  // Initialize cors with dynamic origin configuration
-  const corsHandler = require('cors')({
-    origin: functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  });
+  // Check if the origin is allowed
+  const allowedOrigins = [
+    'https://tiffinbox.co.uk',
+    'https://www.tiffinbox.co.uk',
+    'https://joyful-gnome-a3b9ae.netlify.app'
+  ];
+  
+  const origin = req.headers.origin;
+  
+  // Set CORS headers based on the origin
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.set('Access-Control-Allow-Credentials', 'true');
+  }
 
-  corsHandler(req, res, async () => {
-    try {
-      if (req.method !== 'POST') {
-        res.status(405).send('Method Not Allowed');
-        return;
-      }
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
 
-      const { planType, userEmail, price, userId, customerData } = req.body;
-      
-      if (!planType || !userEmail || !price || !customerData) {
-        res.status(400).send('Missing required fields');
-        return;
-      }
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
-      // Create a Checkout Session
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'gbp',
-              product_data: {
-                name: `TiffinBox ${planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} ${customerData.subscriptionType === 'monthly' ? 'Monthly' : 'Daily'} Plan`,
-                description: `${planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} tiffin delivery service`,
-              },
-              unit_amount: price, // Price in pence
+  try {
+    const { planType, userEmail, price, userId, customerData } = req.body;
+    
+    if (!planType || !userEmail || !price || !customerData) {
+      res.status(400).send('Missing required fields');
+      return;
+    }
+
+    // Create a Checkout Session
+    stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'gbp',
+            product_data: {
+              name: `TiffinBox ${planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} ${customerData.subscriptionType === 'monthly' ? 'Monthly' : 'Daily'} Plan`,
+              description: `${planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'} tiffin delivery service`,
             },
-            quantity: 1,
+            unit_amount: price, // Price in pence
           },
-        ],
-        mode: 'payment',
-        success_url: `${functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app'}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app'}/subscription`,
-        customer_email: userEmail,
-        metadata: {
-          planType,
-          userId: userId || '',
-          name: customerData.name,
-          phone: customerData.phone,
-          address: customerData.address,
-          deliverySlot: customerData.deliverySlot,
-          studentStatus: customerData.studentStatus.toString(),
-          subscriptionType: customerData.subscriptionType,
+          quantity: 1,
         },
-      });
-
+      ],
+      mode: 'payment',
+      success_url: `${functions.config().app.url || 'https://tiffinbox.co.uk'}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${functions.config().app.url || 'https://tiffinbox.co.uk'}/subscription`,
+      customer_email: userEmail,
+      metadata: {
+        planType,
+        userId: userId || '',
+        name: customerData.name,
+        phone: customerData.phone,
+        address: customerData.address,
+        deliverySlot: customerData.deliverySlot,
+        studentStatus: customerData.studentStatus.toString(),
+        subscriptionType: customerData.subscriptionType,
+      },
+    }).then(session => {
       res.status(200).json({ sessionId: session.id });
-    } catch (error) {
+    }).catch(error => {
       console.error('Error creating checkout session:', error);
       res.status(500).json({ error: error.message });
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Error creating checkout session:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Verify a Checkout Session and create customer records
@@ -275,31 +291,44 @@ exports.verifyCheckoutSession = functions.https.onCall(async (data, context) => 
 
 // HTTP version of verifyCheckoutSession with CORS support
 exports.verifyCheckoutSessionHttp = functions.https.onRequest((req, res) => {
-  // Initialize cors with dynamic origin configuration
-  const corsHandler = require('cors')({
-    origin: functions.config().app.url || 'https://joyful-gnome-a3b9ae.netlify.app',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
-  });
+  // Check if the origin is allowed
+  const allowedOrigins = [
+    'https://tiffinbox.co.uk',
+    'https://www.tiffinbox.co.uk',
+    'https://joyful-gnome-a3b9ae.netlify.app'
+  ];
+  
+  const origin = req.headers.origin;
+  
+  // Set CORS headers based on the origin
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+    res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.set('Access-Control-Allow-Credentials', 'true');
+  }
 
-  corsHandler(req, res, async () => {
-    try {
-      if (req.method !== 'POST') {
-        res.status(405).send('Method Not Allowed');
-        return;
-      }
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    res.status(204).send('');
+    return;
+  }
 
-      const { sessionId } = req.body;
-      
-      if (!sessionId) {
-        res.status(400).send('Session ID is required');
-        return;
-      }
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
-      // Retrieve the session from Stripe
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      
+  try {
+    const { sessionId } = req.body;
+    
+    if (!sessionId) {
+      res.status(400).send('Session ID is required');
+      return;
+    }
+
+    // Retrieve the session from Stripe
+    stripe.checkout.sessions.retrieve(sessionId).then(async (session) => {
       // Verify payment status
       if (session.payment_status !== 'paid') {
         res.status(400).json({ success: false, error: 'Payment not completed' });
@@ -419,11 +448,14 @@ exports.verifyCheckoutSessionHttp = functions.https.onRequest((req, res) => {
         orderId,
         customerId,
       });
-    } catch (error) {
+    }).catch(error => {
       console.error('Error verifying checkout session:', error);
       res.status(500).json({ success: false, error: error.message });
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Error verifying checkout session:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 // Calculate ETA based on delivery slot
