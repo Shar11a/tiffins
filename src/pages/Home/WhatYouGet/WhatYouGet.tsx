@@ -25,7 +25,7 @@ const WhatYouGet: React.FC = () => {
   const meals = [
     {
       id: 1,
-      name: 'Paneer Masala + Phulka',
+      name: 'Mutter Paneer + Chapati',
       tag: 'Monday Special',
       image: '../../../assets/mutter-paneer.png',
       alt: 'Paneer masala curry with fresh phulka bread'
