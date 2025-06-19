@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from './WhatYouGet.module.css'
+import mutterPaneerImage from '../../../assets/mutter-paneer.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -27,7 +28,7 @@ const WhatYouGet: React.FC = () => {
       id: 1,
       name: 'Mutter Paneer + Chapati',
       tag: 'Monday Special',
-      image: '../../../assets/mutter-paneer.png',
+      image: mutterPaneerImage,
       alt: 'Paneer masala curry with fresh phulka bread'
     },
     {
