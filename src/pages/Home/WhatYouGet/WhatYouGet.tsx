@@ -27,7 +27,7 @@ const WhatYouGet: React.FC = () => {
       id: 1,
       name: 'Paneer Masala + Phulka',
       tag: 'Monday Special',
-      image: 'https://images.pexels.com/photos/2474661/pexels-photo-2474661.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: '../../../assets/mutter-paneer.png',
       alt: 'Paneer masala curry with fresh phulka bread'
     },
     {
