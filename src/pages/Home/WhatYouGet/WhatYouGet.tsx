@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './WhatYouGet.module.css'
 import mutterPaneerImage from '../../../assets/mutter-paneer.png'
+import dalRiceImage from '../../../assets/dal-rice.png'
 
 const WhatYouGet: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -33,9 +34,9 @@ const WhatYouGet: React.FC = () => {
     },
     {
       id: 2,
-      name: 'Dal Makhani + Jeera Rice',
+      name: 'Tadka Dal + Boiled Rice',
       tag: 'High Protein',
-      image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: dalRiceImage,
       alt: 'Creamy dal makhani with aromatic jeera rice'
     },
     {
