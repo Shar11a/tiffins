@@ -7,11 +7,11 @@ import {
   useStripe,
   useElements
 } from '@stripe/react-stripe-js'
-import { addCustomer } from '../../services/firestore'
+import { createStripeCheckoutSession } from '../../services/stripeService'
 import styles from './PaymentPage.module.css'
 
 // Initialize Stripe with the key from environment variables
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || 'pk_test_51RamUcHWjfKWu0SwXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY || 'pk_test_51RamUcHWjfKWu0SwXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 
 interface PaymentData {
   name: string
@@ -32,8 +32,6 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
   const navigate = useNavigate()
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentError, setPaymentError] = useState('')
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
-  const [trackingToken, setTrackingToken] = useState('')
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -72,102 +70,21 @@ const PaymentForm: React.FC<{ paymentData: PaymentData }> = ({ paymentData }) =>
         throw new Error(error.message || 'Payment failed')
       }
 
-      // For demo purposes, we'll simulate a successful payment
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Create customer record after successful payment
-      const result = await addCustomer({
-        name: paymentData.name,
-        email: paymentData.email,
-        phone: paymentData.phone,
-        address: paymentData.address,
-        deliverySlot: paymentData.deliverySlot,
-        planType: paymentData.planType,
-        studentStatus: paymentData.studentStatus,
-        subscriptionType: paymentData.subscriptionType
-      })
-
-      setTrackingToken(result.trackingToken)
-      setPaymentSuccess(true)
+      // Create Stripe checkout session and redirect
+      const result = await createStripeCheckoutSession(paymentData)
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to create checkout session')
+      }
+      
+      // The redirect happens in the createStripeCheckoutSession function
+      // No need to do anything else here
 
     } catch (error) {
       console.error('Payment error:', error)
       setPaymentError(error instanceof Error ? error.message : 'Payment processing failed. Please try again.')
-    } finally {
       setIsProcessing(false)
     }
-  }
-
-  const handleTrackOrder = () => {
-    navigate('/tracking')
-  }
-
-  const handleNewOrder = () => {
-    navigate('/subscription')
-  }
-
-  if (paymentSuccess) {
-    return (
-      <div className={styles.successContainer}>
-        <div className={styles.successCard}>
-          <div className={styles.successIcon}>🎉</div>
-          <h2 className={styles.successTitle}>Payment Successful!</h2>
-          <p className={styles.successMessage}>
-            Your payment has been processed and your tiffin subscription is now active.
-          </p>
-          
-          <div className={styles.trackingSection}>
-            <div className={styles.trackingCard}>
-              <h3 className={styles.trackingTitle}>📱 Your Tracking Code</h3>
-              <div className={styles.trackingCode}>{trackingToken}</div>
-              <p className={styles.trackingNote}>
-                Save this code to track your delivery. We've also sent it to your email.
-              </p>
-            </div>
-          </div>
-
-          <div className={styles.orderSummary}>
-            <h3 className={styles.summaryTitle}>Order Summary</h3>
-            <div className={styles.summaryDetails}>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Plan:</span>
-                <span className={styles.summaryValue}>
-                  {paymentData.planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian'}
-                </span>
-              </div>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Delivery Time:</span>
-                <span className={styles.summaryValue}>{paymentData.deliverySlot}</span>
-              </div>
-              <div className={styles.summaryItem}>
-                <span className={styles.summaryLabel}>Amount Paid:</span>
-                <span className={styles.summaryValue}>
-                  £{(paymentData.amount / 100).toFixed(2)}
-                  {paymentData.studentStatus && ' (20% student discount applied)'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.successActions}>
-            <button 
-              className={styles.primaryButton}
-              onClick={handleTrackOrder}
-            >
-              <span className={styles.buttonIcon}>🚚</span>
-              Track My Order
-            </button>
-            <button 
-              className={styles.secondaryButton}
-              onClick={handleNewOrder}
-            >
-              <span className={styles.buttonIcon}>➕</span>
-              Place Another Order
-            </button>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (

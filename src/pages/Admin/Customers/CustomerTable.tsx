@@ -7,7 +7,7 @@ import {
 } from '../../../services/firestore'
 import styles from './CustomerTable.module.css'
 
-// Extended interface to include status for demo purposes
+// Extended interface to include status for UI purposes
 interface CustomerWithStatus extends Customer {
   status: 'active' | 'cancelled'
   daysRemaining?: number | string
@@ -46,13 +46,30 @@ const CustomerTable: React.FC = () => {
     try {
       setIsLoading(true)
       const customerData = await getCustomers()
-      // Add status field for demo purposes (in real app this would be in Firestore)
-      const customersWithStatus: CustomerWithStatus[] = customerData.map(customer => ({
-        ...customer,
-        // Ensure subscriptionType is set, defaulting to 'monthly' if undefined
-        subscriptionType: customer.subscriptionType || 'monthly',
-        status: Math.random() > 0.2 ? 'active' : 'cancelled' as 'active' | 'cancelled'
-      }))
+      
+      // Add status field for UI purposes
+      // In a real app, this would come from the database
+      const customersWithStatus: CustomerWithStatus[] = customerData.map(customer => {
+        // Determine if subscription is active based on end date
+        let status: 'active' | 'cancelled' = 'active'
+        
+        // If subscription has an end date and it's in the past, mark as cancelled
+        if (customer.subscriptionEndDate) {
+          const now = new Date()
+          const endDate = customer.subscriptionEndDate.toDate()
+          if (endDate < now) {
+            status = 'cancelled'
+          }
+        }
+        
+        return {
+          ...customer,
+          // Ensure subscriptionType is set, defaulting to 'monthly' if undefined
+          subscriptionType: customer.subscriptionType || 'monthly',
+          status
+        }
+      })
+      
       setCustomers(customersWithStatus)
     } catch (error) {
       console.error('Error loading customers:', error)
