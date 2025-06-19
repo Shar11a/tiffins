@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './DeliveryPreview.module.css'
+import deliveryTrackingImage from '../../../assets/delivery-tracking.jpg'
 
 const DeliveryPreview: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
@@ -42,7 +43,7 @@ const DeliveryPreview: React.FC = () => {
           <div className={`${styles.mapContent} ${isVisible ? styles.slideUp : ''}`}>
             <div className={styles.mapContainer}>
               <img 
-                src="https://images.pexels.com/photos/7876050/pexels-photo-7876050.jpeg?auto=compress&cs=tinysrgb&w=600"
+                src={deliveryTrackingImage}
                 alt="Real-time delivery tracking map showing tiffin location"
                 className={styles.mapImage}
               />
