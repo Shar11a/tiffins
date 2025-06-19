@@ -19,7 +19,7 @@
   background-size: cover;
   background-position: center;
   filter: blur(8px);
-  opacity: 0.1;
+  opacity: 0.8;
   z-index: 0;
 }
 
