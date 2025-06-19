@@ -50,8 +50,14 @@ const MenuToggleTable: React.FC = () => {
 
   const filteredMeals = meals.filter(meal => meal.category === activeTab)
 
-  // Default meal images
-  const getMealImage = (index: number) => {
+  // Get meal image - first check if meal has an image URL, otherwise use default
+  const getMealImage = (meal: MenuItem, index: number) => {
+    // If meal has an image URL, use it
+    if (meal.image && meal.image.trim() !== '') {
+      return meal.image
+    }
+    
+    // Otherwise use default images
     const imageIds = [2474661, 5560763, 5560756, 5560748, 1640777, 2474658, 1640774]
     const imageId = imageIds[index % imageIds.length]
     return `https://images.pexels.com/photos/${imageId}/pexels-photo-${imageId}.jpeg?auto=compress&cs=tinysrgb&w=600`
@@ -148,9 +154,13 @@ const MenuToggleTable: React.FC = () => {
                 >
                   <div className={styles.imageContainer}>
                     <img
-                      src={getMealImage(index)}
+                      src={getMealImage(meal, index)}
                       alt={meal.name}
                       className={styles.mealImage}
+                      onError={(e) => {
+                        // If image fails to load, use a placeholder
+                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Meal+Image';
+                      }}
                     />
                     {meal.tag && (
                       <div className={styles.tagBadge}>

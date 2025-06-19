@@ -19,6 +19,7 @@ interface FormData {
   tag: string
   category: 'veg' | 'non-veg'
   isSpecial: boolean
+  image: string
 }
 
 interface WeeklyMealFormData {
@@ -44,7 +45,8 @@ const MenuEditor: React.FC = () => {
     description: '',
     tag: '',
     category: 'veg',
-    isSpecial: false
+    isSpecial: false,
+    image: ''
   })
   const [weeklyMealFormData, setWeeklyMealFormData] = useState<WeeklyMealFormData>({
     day: '',
@@ -132,7 +134,8 @@ const MenuEditor: React.FC = () => {
         description: '',
         tag: '',
         category: activeTab === 'weekly' ? 'veg' : activeTab,
-        isSpecial: false
+        isSpecial: false,
+        image: ''
       })
 
       // Reload menu items
@@ -190,7 +193,8 @@ const MenuEditor: React.FC = () => {
       description: meal.description,
       tag: meal.tag,
       category: meal.category,
-      isSpecial: meal.isSpecial
+      isSpecial: meal.isSpecial,
+      image: meal.image || ''
     })
   }
 
@@ -229,7 +233,8 @@ const MenuEditor: React.FC = () => {
             description: '',
             tag: '',
             category: activeTab === 'weekly' ? 'veg' : activeTab,
-            isSpecial: false
+            isSpecial: false,
+            image: ''
           })
         }
       } catch (error) {
@@ -272,7 +277,8 @@ const MenuEditor: React.FC = () => {
       description: '',
       tag: '',
       category: activeTab === 'weekly' ? 'veg' : activeTab,
-      isSpecial: false
+      isSpecial: false,
+      image: ''
     })
   }
 
@@ -639,6 +645,15 @@ const MenuEditor: React.FC = () => {
                               </span>
                             )}
                           </div>
+                          {meal.image && (
+                            <div className={styles.imagePreview}>
+                              <img 
+                                src={meal.image} 
+                                alt={meal.name}
+                                className={styles.previewImage}
+                              />
+                            </div>
+                          )}
                           <div className={styles.specialToggle}>
                             <span className={styles.toggleLabel}>Today's Special:</span>
                             <button
@@ -715,6 +730,40 @@ const MenuEditor: React.FC = () => {
                     rows={3}
                   />
                 </div>
+
+                <div className={styles.fieldGroup}>
+                  <label htmlFor="image" className={styles.fieldLabel}>
+                    Image URL
+                  </label>
+                  <input
+                    type="text"
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleInputChange}
+                    className={styles.fieldInput}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <div className={styles.fieldHelp}>
+                    Enter a URL for the dish image. For best results, use a square image (1:1 ratio).
+                  </div>
+                </div>
+
+                {formData.image && (
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel}>Image Preview</label>
+                    <div className={styles.imagePreview}>
+                      <img 
+                        src={formData.image} 
+                        alt="Preview"
+                        className={styles.previewImage}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=Invalid+URL';
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className={styles.fieldGroup}>
                   <label htmlFor="tag" className={styles.fieldLabel}>
