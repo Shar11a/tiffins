@@ -31,13 +31,18 @@ service cloud.firestore {
     // ---------------
     
     // Customer data - allow creation for all users, read/write for authenticated users
-    // IMPORTANT: This assumes customer documents store a 'userId' field matching request.auth.uid
     match /customers/{document} {
       allow create: if true; // Allow unauthenticated users to create subscription records
-      allow read, write: if request.auth != null && (
-        // Owner can read/write their own data (assuming 'userId' field in document)
+      allow read: if request.auth != null && (
+        // Owner can read their own data (assuming 'userId' field in document)
         resource.data.userId == request.auth.uid ||
-        // Admins can read/write all customer data
+        // Admins can read all customer data
+        isAdmin()
+      );
+      allow write: if request.auth != null && (
+        // Owner can write their own data
+        resource.data.userId == request.auth.uid ||
+        // Admins can write all customer data
         isAdmin()
       );
     }
@@ -59,12 +64,12 @@ service cloud.firestore {
     // ---------------
     
     // Payment history - strict rules
-    // Assumes payment records are created by a trusted backend (e.g., Cloud Function)
-    // or only by admins.
     match /paymentHistory/{paymentId} {
       // Users can read their own payments only
-      allow read: if request.auth != null && 
-                   resource.data.customerId == request.auth.uid;
+      allow read: if request.auth != null && (
+                   resource.data.customerId == request.auth.uid ||
+                   isAdmin()
+                 );
       
       // Only allow admins to write payment data (or a trusted backend via service account)
       allow write: if request.auth != null && isAdmin();
@@ -73,15 +78,18 @@ service cloud.firestore {
       allow create: if request.auth != null && 
                       request.resource.data.amount > 0 &&
                       request.resource.data.currency is string &&
-                      request.resource.data.paymentIntentId is string &&
+                      (request.resource.data.paymentIntentId is string ||
+                       request.resource.data.stripeSessionId is string) &&
                       request.resource.data.status in ['succeeded', 'pending', 'failed'];
     }
     
     // Subscription data - secured for both customers and admins
     match /subscriptions/{subscriptionId} {
       // Allow users to read their own subscriptions
-      allow read: if request.auth != null && 
-                   resource.data.customerId == request.auth.uid;
+      allow read: if request.auth != null && (
+                   resource.data.customerId == request.auth.uid ||
+                   isAdmin()
+                 );
 
       // Allow admins to read and write all subscriptions
       allow read, write: if request.auth != null && isAdmin();
@@ -97,12 +105,12 @@ service cloud.firestore {
     }
     
     // Subscription payments links - join table
-    // Assumes these links are created by a trusted backend (e.g., Cloud Function)
-    // or only by admins.
     match /subscriptionPayments/{linkId} {
       // Allow users to read their own subscription payments
-      allow read: if request.auth != null && 
-                   get(/databases/$(database)/documents/subscriptions/$(resource.data.subscriptionId)).data.customerId == request.auth.uid;
+      allow read: if request.auth != null && (
+                   get(/databases/$(database)/documents/subscriptions/$(resource.data.subscriptionId)).data.customerId == request.auth.uid ||
+                   isAdmin()
+                 );
       
       // Only allow admins to create payment links (or a trusted backend via service account)
       allow create: if request.auth != null && isAdmin();
@@ -143,6 +151,7 @@ service cloud.firestore {
       // Allow read access for:
       // 1. Authenticated users OR
       // 2. Public access if the document ID matches the tracking token AND it hasn't expired
+      // 3. Admins can read all delivery statuses
       allow read: if request.auth != null || 
                    (document == resource.data.trackingToken && 
                     resource.data.expiresAt > request.time);
@@ -160,12 +169,12 @@ service cloud.firestore {
     }
     
     // Detailed delivery collection (if used, otherwise remove)
-    // This collection is not currently used in the provided application code.
-    // If its purpose is distinct from 'deliveryStatus', define it clearly.
     match /delivery/{deliveryId} {
       // Customers can see their own deliveries
-      allow read: if request.auth != null && 
-                   resource.data.customerId == request.auth.uid;
+      allow read: if request.auth != null && (
+                   resource.data.customerId == request.auth.uid ||
+                   isAdmin()
+                 );
                    
       // Delivery partners can see assigned deliveries
       allow read: if request.auth != null && 
