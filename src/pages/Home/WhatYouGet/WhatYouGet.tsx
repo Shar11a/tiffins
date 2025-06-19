@@ -44,7 +44,7 @@ const WhatYouGet: React.FC = () => {
       id: 3,
       name: 'Rajma Chawal',
       tag: 'Tuesday Favorite',
-      image: 'https://images.pexels.com/photos/5560756/pexels-photo-5560756.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: rajmaChawalImage,
       alt: 'Traditional rajma curry with steamed rice'
     },
     {
