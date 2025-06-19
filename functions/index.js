@@ -443,3 +443,183 @@ const calculateETA = (deliverySlot) => {
     hour12: true 
   });
 };
+
+// Stripe webhook handler
+exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
+  const signature = req.headers['stripe-signature'];
+  
+  if (!signature) {
+    console.error('No Stripe signature found');
+    return res.status(400).send('Webhook Error: No Stripe signature found');
+  }
+
+  // Get the webhook secret from environment variables or Firebase config
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || functions.config().stripe.webhook_secret;
+  
+  if (!webhookSecret) {
+    console.error('Stripe webhook secret not configured');
+    return res.status(500).send('Webhook Error: Stripe webhook secret not configured');
+  }
+
+  let event;
+
+  try {
+    // Verify the event came from Stripe
+    const rawBody = req.rawBody || req.body;
+    
+    if (!rawBody) {
+      throw new Error('No raw body found in request');
+    }
+    
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      signature,
+      webhookSecret
+    );
+  } catch (err) {
+    console.error(`Webhook signature verification failed: ${err.message}`);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        
+        // Process the successful checkout
+        if (session.payment_status === 'paid') {
+          console.log(`Payment succeeded for session ${session.id}`);
+          
+          // Extract customer data from metadata
+          const { 
+            planType, 
+            userId, 
+            name, 
+            phone, 
+            address, 
+            deliverySlot, 
+            studentStatus, 
+            subscriptionType 
+          } = session.metadata;
+
+          // Generate tracking token
+          const trackingToken = generateTrackingToken();
+          
+          // Calculate subscription end date if monthly
+          let subscriptionEndDate = null;
+          if (subscriptionType === 'monthly') {
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30); // 30 days from now
+            subscriptionEndDate = admin.firestore.Timestamp.fromDate(endDate);
+          }
+          
+          // Create or update customer record
+          let customerId;
+          
+          // Check if customer already exists (by userId if available, or by email)
+          let customerQuery;
+          if (userId) {
+            customerQuery = await db.collection('customers')
+              .where('userId', '==', userId)
+              .limit(1)
+              .get();
+          } else if (session.customer_email) {
+            customerQuery = await db.collection('customers')
+              .where('email', '==', session.customer_email)
+              .limit(1)
+              .get();
+          }
+          
+          if (customerQuery && !customerQuery.empty) {
+            // Update existing customer
+            const customerDoc = customerQuery.docs[0];
+            customerId = customerDoc.id;
+            
+            await customerDoc.ref.update({
+              planType,
+              deliverySlot,
+              studentStatus: studentStatus === 'true',
+              subscriptionType,
+              trackingToken,
+              ...(subscriptionEndDate && { subscriptionEndDate }),
+              ...(userId && { userId }),
+            });
+          } else {
+            // Create new customer
+            const customerRef = await db.collection('customers').add({
+              name,
+              email: session.customer_email,
+              phone,
+              address,
+              deliverySlot,
+              planType,
+              studentStatus: studentStatus === 'true',
+              subscriptionType,
+              orderDate: admin.firestore.Timestamp.now(),
+              trackingToken,
+              ...(subscriptionEndDate && { subscriptionEndDate }),
+              ...(userId && { userId }),
+            });
+            
+            customerId = customerRef.id;
+          }
+          
+          // Generate order ID
+          const orderId = `TFN${Date.now().toString().slice(-6)}`;
+          
+          // Create payment record
+          await db.collection('paymentHistory').add({
+            customerId,
+            amount: session.amount_total,
+            currency: session.currency,
+            status: 'succeeded',
+            paymentMethod: 'card',
+            stripeSessionId: session.id,
+            createdAt: admin.firestore.Timestamp.now(),
+            metadata: {
+              planType,
+              subscriptionType,
+              studentStatus: studentStatus === 'true',
+            },
+          });
+          
+          // Create initial delivery status
+          await db.collection('deliveryStatus').doc(trackingToken).set({
+            customerId,
+            customerName: name,
+            orderId,
+            trackingToken,
+            status: 'prepared',
+            assignedPartner: 'unassigned',
+            currentLocation: 'Kitchen - Being Prepared',
+            estimatedArrival: calculateETA(deliverySlot),
+            lastUpdated: admin.firestore.Timestamp.now(),
+            expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 48 * 60 * 60 * 1000)), // 48 hours
+          });
+          
+          console.log(`Created customer record and delivery status for ${name}`);
+        }
+        break;
+        
+      case 'payment_intent.succeeded':
+        const paymentIntent = event.data.object;
+        console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
+        break;
+        
+      case 'payment_intent.payment_failed':
+        const failedPaymentIntent = event.data.object;
+        console.log(`Payment failed: ${failedPaymentIntent.last_payment_error?.message}`);
+        break;
+        
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    res.status(200).send('Webhook received successfully');
+  } catch (err) {
+    console.error(`Error processing webhook: ${err.message}`);
+    res.status(500).send(`Webhook Error: ${err.message}`);
+  }
+});
