@@ -1,9 +1,15 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || functions.config().stripe.key);
+const emailjs = require('@emailjs/node');
 
 admin.initializeApp();
 const db = admin.firestore();
+
+// EmailJS configuration
+const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || functions.config().emailjs?.service_id;
+const EMAILJS_TEMPLATE_ID_SUBSCRIPTION = process.env.EMAILJS_TEMPLATE_ID_SUBSCRIPTION || functions.config().emailjs?.template_subscription;
+const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID || functions.config().emailjs?.user_id;
 
 // Generate secure tracking token
 const generateTrackingToken = () => {
@@ -13,6 +19,45 @@ const generateTrackingToken = () => {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return result;
+};
+
+// Send subscription confirmation email
+const sendSubscriptionConfirmationEmail = async (params) => {
+  try {
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_TEMPLATE_ID_SUBSCRIPTION || !EMAILJS_USER_ID) {
+      console.error('EmailJS configuration missing. Cannot send email.');
+      return;
+    }
+
+    const templateParams = {
+      to_name: params.customerName,
+      to_email: params.customerEmail,
+      tracking_code: params.trackingToken,
+      plan_type: params.planType === 'veg' ? 'Vegetarian' : 'Non-Vegetarian',
+      delivery_slot: params.deliverySlot,
+      order_id: params.orderId,
+      price: params.price,
+      discount_applied: params.studentDiscount ? 'Yes (20% Student Discount)' : 'No',
+      subscription_type: params.subscriptionType === 'monthly' ? 'Monthly (30 days)' : 'Daily',
+      tracking_url: `${functions.config().app.url || 'https://tiffinbox.co.uk'}/tracking`
+    };
+
+    const result = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID_SUBSCRIPTION,
+      templateParams,
+      {
+        publicKey: EMAILJS_USER_ID,
+        privateKey: functions.config().emailjs?.private_key || ''
+      }
+    );
+
+    console.log('Email sent successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('Error sending subscription confirmation email:', error);
+    throw error;
+  }
 };
 
 // Create a Checkout Session
@@ -267,11 +312,28 @@ exports.verifyCheckoutSession = functions.https.onCall(async (data, context) => 
       expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 48 * 60 * 60 * 1000)), // 48 hours
     });
     
-    // Try to send confirmation email
+    // Send confirmation email
     try {
-      // This would typically call your email service
-      // For now, we'll just log it
-      console.log(`Sending confirmation email to ${session.customer_email}`);
+      // Calculate price string for email
+      const basePrice = planType === 'veg' ? 181.99 : 259.99;
+      const finalPrice = studentStatus === 'true' ? basePrice * 0.8 : basePrice;
+      const priceDisplay = subscriptionType === 'monthly' 
+        ? `£${finalPrice.toFixed(2)} for 30 days` 
+        : `£${basePrice.toFixed(2)}/day`;
+      
+      await sendSubscriptionConfirmationEmail({
+        customerName: name,
+        customerEmail: session.customer_email,
+        trackingToken,
+        planType,
+        deliverySlot,
+        orderId,
+        price: priceDisplay,
+        studentDiscount: studentStatus === 'true',
+        subscriptionType
+      });
+      
+      console.log(`Confirmation email sent to ${session.customer_email}`);
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
       // Don't throw error - payment verification should still succeed
@@ -441,6 +503,33 @@ exports.verifyCheckoutSessionHttp = functions.https.onRequest((req, res) => {
         lastUpdated: admin.firestore.Timestamp.now(),
         expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 48 * 60 * 60 * 1000)), // 48 hours
       });
+      
+      // Send confirmation email
+      try {
+        // Calculate price string for email
+        const basePrice = planType === 'veg' ? 181.99 : 259.99;
+        const finalPrice = studentStatus === 'true' ? basePrice * 0.8 : basePrice;
+        const priceDisplay = subscriptionType === 'monthly' 
+          ? `£${finalPrice.toFixed(2)} for 30 days` 
+          : `£${basePrice.toFixed(2)}/day`;
+        
+        await sendSubscriptionConfirmationEmail({
+          customerName: name,
+          customerEmail: session.customer_email,
+          trackingToken,
+          planType,
+          deliverySlot,
+          orderId,
+          price: priceDisplay,
+          studentDiscount: studentStatus === 'true',
+          subscriptionType
+        });
+        
+        console.log(`Confirmation email sent to ${session.customer_email}`);
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't throw error - payment verification should still succeed
+      }
       
       res.status(200).json({ 
         success: true, 
@@ -630,6 +719,33 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
             expiresAt: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 48 * 60 * 60 * 1000)), // 48 hours
           });
           
+          // Send confirmation email
+          try {
+            // Calculate price string for email
+            const basePrice = planType === 'veg' ? 181.99 : 259.99;
+            const finalPrice = studentStatus === 'true' ? basePrice * 0.8 : basePrice;
+            const priceDisplay = subscriptionType === 'monthly' 
+              ? `£${finalPrice.toFixed(2)} for 30 days` 
+              : `£${basePrice.toFixed(2)}/day`;
+            
+            await sendSubscriptionConfirmationEmail({
+              customerName: name,
+              customerEmail: session.customer_email,
+              trackingToken,
+              planType,
+              deliverySlot,
+              orderId,
+              price: priceDisplay,
+              studentDiscount: studentStatus === 'true',
+              subscriptionType
+            });
+            
+            console.log(`Confirmation email sent to ${session.customer_email}`);
+          } catch (emailError) {
+            console.error('Failed to send confirmation email:', emailError);
+            // Don't throw error - webhook should still succeed
+          }
+          
           console.log(`Created customer record and delivery status for ${name}`);
         }
         break;
@@ -653,5 +769,56 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
   } catch (err) {
     console.error(`Error processing webhook: ${err.message}`);
     res.status(500).send(`Webhook Error: ${err.message}`);
+  }
+});
+
+// Send delivery status update email
+exports.sendDeliveryStatusUpdate = functions.https.onCall(async (data, context) => {
+  try {
+    const { customerEmail, customerName, trackingToken, status, estimatedArrival } = data;
+    
+    if (!customerEmail || !customerName || !trackingToken || !status) {
+      throw new Error('Missing required fields');
+    }
+    
+    if (!EMAILJS_SERVICE_ID || !EMAILJS_USER_ID) {
+      throw new Error('EmailJS configuration missing');
+    }
+    
+    const EMAILJS_TEMPLATE_ID_STATUS_UPDATE = functions.config().emailjs?.template_status_update;
+    
+    if (!EMAILJS_TEMPLATE_ID_STATUS_UPDATE) {
+      throw new Error('Status update email template ID missing');
+    }
+    
+    const statusText = 
+      status === 'prepared' ? 'Your tiffin is being prepared' :
+      status === 'pickedUp' ? 'Your tiffin has been picked up' :
+      status === 'onTheWay' ? 'Your tiffin is on the way' :
+      'Your tiffin has been delivered';
+    
+    const templateParams = {
+      to_name: customerName,
+      to_email: customerEmail,
+      tracking_code: trackingToken,
+      status: statusText,
+      estimated_arrival: estimatedArrival || 'Soon',
+      tracking_url: `${functions.config().app.url || 'https://tiffinbox.co.uk'}/tracking`
+    };
+    
+    const result = await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_TEMPLATE_ID_STATUS_UPDATE,
+      templateParams,
+      {
+        publicKey: EMAILJS_USER_ID,
+        privateKey: functions.config().emailjs?.private_key || ''
+      }
+    );
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error sending status update email:', error);
+    throw new functions.https.HttpsError('internal', error.message);
   }
 });

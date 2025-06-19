@@ -13,6 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@emailjs/node": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "firebase-admin": "^11.8.0",
