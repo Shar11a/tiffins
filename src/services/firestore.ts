@@ -527,12 +527,14 @@ export const getDeliveryStatuses = async (): Promise<DeliveryStatus[]> => {
 export const updateDeliveryStatus = async (id: string, data: Partial<DeliveryStatus>) => {
   try {
     const deliveryRef = doc(db, 'deliveryStatus', id)
+    
+    // First update the delivery status
     await updateDoc(deliveryRef, {
       ...data,
       lastUpdated: Timestamp.now()
     })
 
-    // Send email notification for status updates
+    // Then send email notification for status updates
     if (data.status) {
       try {
         // Get the delivery details to send notification
@@ -542,14 +544,16 @@ export const updateDeliveryStatus = async (id: string, data: Partial<DeliverySta
           const delivery = deliveryDoc.data() as DeliveryStatus
           
           // Get customer email
-          const customerDoc = await getDocs(query(
+          const customerQuery = query(
             collection(db, 'customers'),
             where('trackingToken', '==', delivery.trackingToken)
-          ))
+          )
+          const customerSnapshot = await getDocs(customerQuery)
           
-          if (!customerDoc.empty) {
-            const customer = customerDoc.docs[0].data() as Customer
+          if (!customerSnapshot.empty) {
+            const customer = customerSnapshot.docs[0].data() as Customer
             
+            // Use the sendDeliveryStatusUpdate function from notifications.ts
             await sendDeliveryStatusUpdate(
               customer.email,
               customer.name,
@@ -557,6 +561,8 @@ export const updateDeliveryStatus = async (id: string, data: Partial<DeliverySta
               data.status,
               delivery.estimatedArrival
             )
+            
+            console.log(`Status update email sent to ${customer.email}`)
           }
         }
       } catch (emailError) {
@@ -564,6 +570,8 @@ export const updateDeliveryStatus = async (id: string, data: Partial<DeliverySta
         // Don't throw error - status update should still succeed
       }
     }
+    
+    return true
   } catch (error) {
     console.error('Error updating delivery status:', error)
     throw error

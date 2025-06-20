@@ -869,7 +869,7 @@ exports.handleStripeWebhook = functions.https.onRequest(async (req, res) => {
   }
 });
 
-// Send delivery status update email
+// Send delivery status update email - FIXED to return a promise properly
 exports.sendDeliveryStatusUpdate = functions.https.onCall(
   async (data, context) => {
     try {
@@ -925,6 +925,7 @@ exports.sendDeliveryStatusUpdate = functions.https.onCall(
         `
       };
 
+      // Send email and wait for the promise to resolve
       const result = await transporter.sendMail(message);
       console.log("Status update email sent successfully:", result);
 
@@ -978,7 +979,7 @@ exports.sendDeliveryOTPEmail = functions.https.onCall(
         `
       };
 
-      // Send email
+      // Send email and wait for the promise to resolve
       const result = await transporter.sendMail(message);
       console.log("OTP email sent successfully:", result);
 
@@ -1035,7 +1036,7 @@ exports.sendDeliveryCompletionEmail = functions.https.onCall(
         `
       };
 
-      // Send email
+      // Send email and wait for the promise to resolve
       const result = await transporter.sendMail(message);
       console.log("Delivery completion email sent successfully:", result);
 

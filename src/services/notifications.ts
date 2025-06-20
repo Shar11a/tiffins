@@ -29,6 +29,14 @@ export const sendDeliveryStatusUpdate = async (
   estimatedArrival: string
 ) => {
   try {
+    console.log('Calling sendDeliveryStatusUpdate function with params:', {
+      customerEmail,
+      customerName,
+      trackingToken,
+      status,
+      estimatedArrival
+    });
+    
     const sendStatusUpdate = httpsCallable(functions, 'sendDeliveryStatusUpdate');
     
     const result = await sendStatusUpdate({
@@ -39,6 +47,7 @@ export const sendDeliveryStatusUpdate = async (
       estimatedArrival
     });
     
+    console.log('Status update email function result:', result.data);
     return result.data;
   } catch (error) {
     console.error('Error sending delivery status update email:', error);
@@ -54,6 +63,13 @@ export const sendDeliveryOTP = async (
   orderId: string
 ) => {
   try {
+    console.log('Calling sendDeliveryOTPEmail function with params:', {
+      customerEmail,
+      customerName,
+      otp,
+      orderId
+    });
+    
     const sendOTPEmail = httpsCallable(functions, 'sendDeliveryOTPEmail');
     
     const result = await sendOTPEmail({
@@ -63,6 +79,7 @@ export const sendDeliveryOTP = async (
       orderId
     });
     
+    console.log('OTP email function result:', result.data);
     return result.data;
   } catch (error) {
     console.error('Error sending delivery OTP email:', error);
@@ -78,6 +95,13 @@ export const sendDeliveryCompletion = async (
   otp: string
 ) => {
   try {
+    console.log('Calling sendDeliveryCompletionEmail function with params:', {
+      customerEmail,
+      customerName,
+      trackingToken,
+      otp
+    });
+    
     const sendCompletionEmail = httpsCallable(functions, 'sendDeliveryCompletionEmail');
     
     const result = await sendCompletionEmail({
@@ -92,9 +116,22 @@ export const sendDeliveryCompletion = async (
       })
     });
     
+    console.log('Completion email function result:', result.data);
     return result.data;
   } catch (error) {
     console.error('Error sending delivery completion email:', error);
+    throw error;
+  }
+};
+
+// Test email function
+export const testEmail = async (email: string) => {
+  try {
+    const response = await fetch(`https://us-central1-tiffinbox-564cc.cloudfunctions.net/testEmail?email=${encodeURIComponent(email)}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error testing email:', error);
     throw error;
   }
 };
