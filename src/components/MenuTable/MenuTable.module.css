@@ -214,42 +214,6 @@
   background: #ffffff;
 }
 
-/* Scroll Indicator */
-.scrollIndicator {
-  display: none;
-  text-align: center;
-  margin-top: 1rem;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.6s ease-out 0.4s;
-}
-
-.scrollIndicator.fadeIn {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.scrollText {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #2b2b2b;
-  opacity: 0.6;
-  font-family: 'Poppins', sans-serif;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.scrollArrow {
-  font-size: 1rem;
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { transform: translateX(0px); }
-  50% { transform: translateX(5px); }
-}
-
 /* Mobile Card View */
 .mobileCardView {
   display: none;
@@ -298,6 +262,42 @@
   font-size: 0.9rem;
   font-weight: 500;
   color: #2b2b2b;
+}
+
+/* Scroll Indicator */
+.scrollIndicator {
+  display: none;
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.6s ease-out 0.4s;
+}
+
+.scrollIndicator.fadeIn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scrollText {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+  opacity: 0.6;
+  font-family: 'Poppins', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.scrollArrow {
+  font-size: 1rem;
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(5px); }
 }
 
 /* Responsive Design */
