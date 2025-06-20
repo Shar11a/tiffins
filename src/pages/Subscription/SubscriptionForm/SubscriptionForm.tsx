@@ -371,7 +371,7 @@ const SubscriptionForm: React.FC = () => {
                   <div className={styles.planIcon}>🥬</div>
                   <div className={styles.planInfo}>
                     <h4 className={styles.planName}>Vegetarian</h4>
-                    <p className={styles.planPrice}>£181.99/month</p>
+                    <p className={styles.planPrice}>£1.99/month</p>
                     <p className={styles.planDescription}>Fresh veg curries, dal, rice & rotis</p>
                   </div>
                   <div className={styles.planCheck}>
