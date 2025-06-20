@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 const stripe = require("stripe")(
   process.env.STRIPE_SECRET_KEY || functions.config().stripe.key
 );
-const emailjs = require("emailjs-com");
+const { SMTPClient } = require("@emailjs/nodejs");
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -16,6 +16,16 @@ const EMAILJS_TEMPLATE_ID_SUBSCRIPTION =
   functions.config().emailjs?.template_subscription;
 const EMAILJS_USER_ID =
   process.env.EMAILJS_USER_ID || functions.config().emailjs?.user_id;
+const EMAILJS_PRIVATE_KEY =
+  process.env.EMAILJS_PRIVATE_KEY || functions.config().emailjs?.private_key;
+
+// Initialize EmailJS client
+const emailClient = new SMTPClient({
+  user: EMAILJS_USER_ID,
+  password: EMAILJS_PRIVATE_KEY,
+  host: 'smtp.emailjs.com',
+  ssl: true
+});
 
 // Generate secure tracking token
 const generateTrackingToken = () => {
@@ -33,7 +43,8 @@ const sendSubscriptionConfirmationEmail = async (params) => {
     if (
       !EMAILJS_SERVICE_ID ||
       !EMAILJS_TEMPLATE_ID_SUBSCRIPTION ||
-      !EMAILJS_USER_ID
+      !EMAILJS_USER_ID ||
+      !EMAILJS_PRIVATE_KEY
     ) {
       console.error("EmailJS configuration missing. Cannot send email.");
       return;
@@ -57,16 +68,39 @@ const sendSubscriptionConfirmationEmail = async (params) => {
       }/tracking`,
     };
 
-    const result = await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID_SUBSCRIPTION,
-      templateParams,
-      {
-        publicKey: EMAILJS_USER_ID,
-        privateKey: functions.config().emailjs?.private_key || "",
-      }
-    );
+    // Send email using @emailjs/nodejs
+    const message = {
+      from: 'TiffinBox <noreply@tiffinbox.co.uk>',
+      to: params.customerEmail,
+      subject: 'Your TiffinBox Subscription Confirmation',
+      text: `Hello ${params.customerName},\n\nThank you for subscribing to TiffinBox! Your order has been confirmed.\n\nOrder ID: ${params.orderId}\nTracking Code: ${params.trackingToken}\nPlan: ${params.planType === "veg" ? "Vegetarian" : "Non-Vegetarian"}\nDelivery Slot: ${params.deliverySlot}\nPrice: ${params.price}\n\nYou can track your delivery at: ${functions.config().app.url || "https://tiffinbox.co.uk"}/tracking\n\nThank you for choosing TiffinBox!\n`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #d62828;">TiffinBox Subscription Confirmed!</h2>
+          <p>Hello ${params.customerName},</p>
+          <p>Thank you for subscribing to TiffinBox! Your order has been confirmed and we're excited to serve you delicious home-cooked meals.</p>
+          
+          <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Order Details</h3>
+            <p><strong>Order ID:</strong> ${params.orderId}</p>
+            <p><strong>Tracking Code:</strong> ${params.trackingToken}</p>
+            <p><strong>Plan Type:</strong> ${params.planType === "veg" ? "Vegetarian" : "Non-Vegetarian"}</p>
+            <p><strong>Subscription:</strong> ${params.subscriptionType === "monthly" ? "Monthly (30 days)" : "Daily"}</p>
+            <p><strong>Delivery Slot:</strong> ${params.deliverySlot}</p>
+            <p><strong>Price:</strong> ${params.price}</p>
+            <p><strong>Student Discount:</strong> ${params.studentDiscount ? "Yes (20% applied)" : "No"}</p>
+          </div>
+          
+          <p>You can track your delivery status anytime using your tracking code at:</p>
+          <p><a href="${functions.config().app.url || "https://tiffinbox.co.uk"}/tracking" style="color: #d62828; text-decoration: none; font-weight: bold;">Track My Tiffin</a></p>
+          
+          <p>Thank you for choosing TiffinBox!</p>
+          <p>Warm regards,<br>The TiffinBox Team</p>
+        </div>
+      `
+    };
 
+    const result = await emailClient.send(message);
     console.log("Email sent successfully:", result);
     return result;
   } catch (error) {
@@ -872,15 +906,8 @@ exports.sendDeliveryStatusUpdate = functions.https.onCall(
         throw new Error("Missing required fields");
       }
 
-      if (!EMAILJS_SERVICE_ID || !EMAILJS_USER_ID) {
+      if (!EMAILJS_USER_ID || !EMAILJS_PRIVATE_KEY) {
         throw new Error("EmailJS configuration missing");
-      }
-
-      const EMAILJS_TEMPLATE_ID_STATUS_UPDATE =
-        functions.config().emailjs?.template_status_update;
-
-      if (!EMAILJS_TEMPLATE_ID_STATUS_UPDATE) {
-        throw new Error("Status update email template ID missing");
       }
 
       const statusText =
@@ -892,26 +919,35 @@ exports.sendDeliveryStatusUpdate = functions.https.onCall(
           ? "Your tiffin is on the way"
           : "Your tiffin has been delivered";
 
-      const templateParams = {
-        to_name: customerName,
-        to_email: customerEmail,
-        tracking_code: trackingToken,
-        status: statusText,
-        estimated_arrival: estimatedArrival || "Soon",
-        tracking_url: `${
-          functions.config().app.url || "https://tiffinbox.co.uk"
-        }/tracking`,
+      // Send email using @emailjs/nodejs
+      const message = {
+        from: 'TiffinBox <noreply@tiffinbox.co.uk>',
+        to: customerEmail,
+        subject: `TiffinBox Delivery Update: ${statusText}`,
+        text: `Hello ${customerName},\n\nYour tiffin delivery status has been updated.\n\nStatus: ${statusText}\nTracking Code: ${trackingToken}\nEstimated Arrival: ${estimatedArrival || "Soon"}\n\nYou can track your delivery at: ${functions.config().app.url || "https://tiffinbox.co.uk"}/tracking\n\nThank you for choosing TiffinBox!\n`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+            <h2 style="color: #d62828;">TiffinBox Delivery Update</h2>
+            <p>Hello ${customerName},</p>
+            <p>Your tiffin delivery status has been updated.</p>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #d62828;">Current Status: ${statusText}</h3>
+              <p><strong>Tracking Code:</strong> ${trackingToken}</p>
+              <p><strong>Estimated Arrival:</strong> ${estimatedArrival || "Soon"}</p>
+            </div>
+            
+            <p>You can track your delivery status anytime using your tracking code at:</p>
+            <p><a href="${functions.config().app.url || "https://tiffinbox.co.uk"}/tracking" style="color: #d62828; text-decoration: none; font-weight: bold;">Track My Tiffin</a></p>
+            
+            <p>Thank you for choosing TiffinBox!</p>
+            <p>Warm regards,<br>The TiffinBox Team</p>
+          </div>
+        `
       };
 
-      const result = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID_STATUS_UPDATE,
-        templateParams,
-        {
-          publicKey: EMAILJS_USER_ID,
-          privateKey: functions.config().emailjs?.private_key || "",
-        }
-      );
+      const result = await emailClient.send(message);
+      console.log("Status update email sent successfully:", result);
 
       return { success: true };
     } catch (error) {
