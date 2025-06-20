@@ -878,7 +878,7 @@ exports.sendDeliveryStatusUpdate = functions.https.onCall(
         customerName,
         trackingToken,
         status,
-        estimatedArrival,
+        estimatedArrival
       } = data;
 
       if (!customerEmail || !customerName || !trackingToken || !status) {
@@ -931,6 +931,117 @@ exports.sendDeliveryStatusUpdate = functions.https.onCall(
       return { success: true };
     } catch (error) {
       console.error("Error sending status update email:", error);
+      throw new functions.https.HttpsError("internal", error.message);
+    }
+  }
+);
+
+// Send delivery OTP email
+exports.sendDeliveryOTPEmail = functions.https.onCall(
+  async (data, context) => {
+    try {
+      const {
+        customerEmail,
+        customerName,
+        otp,
+        orderId
+      } = data;
+
+      if (!customerEmail || !customerName || !otp || !orderId) {
+        throw new Error("Missing required fields");
+      }
+
+      if (!transporter) {
+        throw new Error("Email configuration missing");
+      }
+
+      // Create email content
+      const message = {
+        from: `TiffinBox <${EMAIL_FROM}>`,
+        to: customerEmail,
+        subject: 'Your TiffinBox Delivery OTP',
+        text: `Hello ${customerName},\n\nYour TiffinBox delivery is on the way! Please provide this OTP to the delivery partner when they arrive:\n\nOTP: ${otp}\n\nOrder ID: ${orderId}\n\nThank you for choosing TiffinBox!\n`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+            <h2 style="color: #d62828;">TiffinBox Delivery OTP</h2>
+            <p>Hello ${customerName},</p>
+            <p>Your TiffinBox delivery is on the way! Please provide this OTP to the delivery partner when they arrive:</p>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
+              <h1 style="margin: 0; color: #d62828; font-size: 36px;">${otp}</h1>
+              <p style="margin: 5px 0 0 0;"><strong>Order ID:</strong> ${orderId}</p>
+            </div>
+            
+            <p>Thank you for choosing TiffinBox!</p>
+            <p>Warm regards,<br>The TiffinBox Team</p>
+          </div>
+        `
+      };
+
+      // Send email
+      const result = await transporter.sendMail(message);
+      console.log("OTP email sent successfully:", result);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error sending OTP email:", error);
+      throw new functions.https.HttpsError("internal", error.message);
+    }
+  }
+);
+
+// Send delivery completion email
+exports.sendDeliveryCompletionEmail = functions.https.onCall(
+  async (data, context) => {
+    try {
+      const {
+        customerEmail,
+        customerName,
+        trackingToken,
+        otp,
+        deliveryTime
+      } = data;
+
+      if (!customerEmail || !customerName || !trackingToken) {
+        throw new Error("Missing required fields");
+      }
+
+      if (!transporter) {
+        throw new Error("Email configuration missing");
+      }
+
+      // Create email content
+      const message = {
+        from: `TiffinBox <${EMAIL_FROM}>`,
+        to: customerEmail,
+        subject: 'Your TiffinBox Delivery is Complete!',
+        text: `Hello ${customerName},\n\nYour TiffinBox delivery has been successfully completed!\n\nTracking Code: ${trackingToken}\nDelivery Time: ${deliveryTime || 'Just now'}\n\nWe hope you enjoy your meal. Thank you for choosing TiffinBox!\n`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+            <h2 style="color: #25d366;">TiffinBox Delivery Complete!</h2>
+            <p>Hello ${customerName},</p>
+            <p>Your TiffinBox delivery has been successfully completed!</p>
+            
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p><strong>Tracking Code:</strong> ${trackingToken}</p>
+              <p><strong>Delivery Time:</strong> ${deliveryTime || 'Just now'}</p>
+              <p><strong>Verification OTP:</strong> ${otp}</p>
+            </div>
+            
+            <p>We hope you enjoy your meal. Please let us know if you have any feedback!</p>
+            <p>Thank you for choosing TiffinBox!</p>
+            <p>Warm regards,<br>The TiffinBox Team</p>
+          </div>
+        `
+      };
+
+      // Send email
+      const result = await transporter.sendMail(message);
+      console.log("Delivery completion email sent successfully:", result);
+
+      return { success: true };
+    } catch (error) {
+      console.error("Error sending delivery completion email:", error);
       throw new functions.https.HttpsError("internal", error.message);
     }
   }

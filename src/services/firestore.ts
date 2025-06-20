@@ -14,7 +14,7 @@ import {
   Timestamp
 } from 'firebase/firestore'
 import { db, auth } from '../firebase/config'
-import { sendSubscriptionConfirmation, sendDeliveryStatusUpdate } from './notifications'
+import { sendDeliveryStatusUpdate } from './notifications'
 
 // Generate secure tracking token
 const generateTrackingToken = (): string => {
@@ -127,19 +127,6 @@ export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate
     // Generate order ID
     const orderId = `TFN${Date.now().toString().slice(-6)}`
     
-    // Calculate pricing
-    const basePrice = customerData.planType === 'veg' ? 181.99 : 259.99
-    let finalPrice = basePrice
-    
-    // Apply student discount if applicable (20%)
-    if (customerData.studentStatus) {
-      finalPrice = finalPrice * 0.8
-    }
-    
-    const priceDisplay = customerData.subscriptionType === 'monthly' 
-      ? `£${finalPrice.toFixed(2)} for 30 days` 
-      : `£${basePrice.toFixed(2)}/day`
-    
     // Create initial delivery status - MODIFIED to use trackingToken as document ID
     await setDoc(doc(db, 'deliveryStatus', trackingToken), {
       customerId: docRef.id,
@@ -154,24 +141,8 @@ export const addCustomer = async (customerData: Omit<Customer, 'id' | 'orderDate
       expiresAt: Timestamp.fromDate(new Date(Date.now() + 48 * 60 * 60 * 1000)) // 48 hours
     })
     
-    // Send confirmation email
-    try {
-      await sendSubscriptionConfirmation({
-        customerName: customerData.name,
-        customerEmail: customerData.email,
-        trackingToken,
-        planType: customerData.planType,
-        deliverySlot: customerData.deliverySlot,
-        orderId,
-        dailyPrice: priceDisplay,
-        studentDiscount: customerData.studentStatus,
-        subscriptionType: customerData.subscriptionType || 'monthly'
-      })
-      console.log('Confirmation email sent successfully')
-    } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError)
-      // Don't throw error - subscription should still succeed even if email fails
-    }
+    // Email confirmation is now handled by the verifyCheckoutSession Cloud Function
+    // No need to call sendSubscriptionConfirmation here
     
     return { customerId: docRef.id, trackingToken }
   } catch (error) {
