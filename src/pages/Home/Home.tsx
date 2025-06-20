@@ -1,5 +1,6 @@
 import React from 'react'
 import Hero from './Hero/Hero'
+import WhatWeDo from './WhatWeDo/WhatWeDo'
 import HowItWorks from './HowItWorks/HowItWorks'
 import WhatYouGet from './WhatYouGet/WhatYouGet'
 import StudentDiscount from './StudentDiscount/StudentDiscount'
@@ -11,6 +12,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Hero />
+      <WhatWeDo />
       <HowItWorks />
       <WhatYouGet />
       <StudentDiscount />
