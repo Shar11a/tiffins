@@ -145,6 +145,41 @@ const MenuTable: React.FC = () => {
               </tbody>
             </table>
           </div>
+          
+          {/* Mobile Card View for Small Screens */}
+          <div className={styles.mobileCardView}>
+            {weeklyMeals.map((meal) => (
+              <div key={meal.day} className={styles.dayCard}>
+                <div className={styles.dayHeader}>{meal.day}</div>
+                <div className={styles.mealGrid}>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Veg Curry</div>
+                    <div className={styles.mealValue}>{meal.vegCurry}</div>
+                  </div>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Veg Dry</div>
+                    <div className={styles.mealValue}>{meal.vegDry}</div>
+                  </div>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Non-Veg Curry</div>
+                    <div className={styles.mealValue}>{meal.nonVegCurry}</div>
+                  </div>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Rice</div>
+                    <div className={styles.mealValue}>{meal.rice}</div>
+                  </div>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Bread</div>
+                    <div className={styles.mealValue}>{meal.bread}</div>
+                  </div>
+                  <div className={styles.mealItem}>
+                    <div className={styles.mealLabel}>Dips</div>
+                    <div className={styles.mealValue}>{meal.dips}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Scroll Indicator for Mobile */}

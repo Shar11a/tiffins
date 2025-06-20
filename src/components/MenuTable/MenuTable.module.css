@@ -250,6 +250,56 @@
   50% { transform: translateX(5px); }
 }
 
+/* Mobile Card View */
+.mobileCardView {
+  display: none;
+  padding: 1rem;
+}
+
+.dayCard {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.dayHeader {
+  background: #d62828;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.mealGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.mealItem {
+  background: #fef6e4;
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.mealLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #d62828;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.mealValue {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2b2b2b;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .tableHeadCell,
@@ -339,29 +389,16 @@
     font-size: 1rem;
   }
   
-  .mobileTable {
-    min-width: 600px;
-    width: 600px;
+  .mobileScrollContainer {
+    display: none;
   }
   
-  .mobileTable .tableHeadCell,
-  .mobileTable .tableCell {
-    padding: 0.8rem 0.4rem;
-    font-size: 0.75rem;
+  .scrollIndicator {
+    display: none;
   }
   
-  .mobileTable .tableCell:first-child,
-  .mobileTable .tableHeadCell:first-child {
-    padding-left: 0.75rem;
-    min-width: 70px;
-  }
-  
-  .mobileTable .tableHeadCell {
-    font-size: 0.7rem;
-  }
-  
-  .scrollText {
-    font-size: 0.85rem;
+  .mobileCardView {
+    display: block;
   }
 }
 
@@ -373,6 +410,14 @@
   
   .tableRow {
     border-bottom: 2px solid #2b2b2b;
+  }
+  
+  .dayCard {
+    border: 2px solid #2b2b2b;
+  }
+  
+  .mealItem {
+    border: 1px solid #2b2b2b;
   }
 }
 
