@@ -12,11 +12,11 @@ const db = admin.firestore();
 const EMAIL_FROM = process.env.EMAIL_FROM || functions.config().email?.from || "noreply@tiffinbox.co.uk";
 const EMAIL_HOST = process.env.EMAIL_HOST || functions.config().email?.host || "smtp.gmail.com";
 const EMAIL_USER = process.env.EMAIL_USER || functions.config().email?.user;
-const EMAIL_PASS = process.env.EMAIL_PASS || functions.config().email?.pass;
+const EMAIL_PASS = "fkcj odlm ogxs ljwj"; // Updated with the app password
 
 // Initialize email transporter
 let transporter = null;
-if (EMAIL_USER && EMAIL_PASS) {
+if (EMAIL_USER) {
   transporter = nodemailer.createTransport({
     host: EMAIL_HOST,
     port: 587,
@@ -1046,3 +1046,81 @@ exports.sendDeliveryCompletionEmail = functions.https.onCall(
     }
   }
 );
+
+// Test email function
+exports.testEmail = functions.https.onRequest(async (req, res) => {
+  try {
+    // Check if the origin is allowed
+    const allowedOrigins = [
+      "https://tiffinbox.co.uk",
+      "https://www.tiffinbox.co.uk",
+      "https://joyful-gnome-a3b9ae.netlify.app",
+    ];
+
+    const origin = req.headers.origin;
+
+    // Set CORS headers based on the origin
+    if (origin && allowedOrigins.includes(origin)) {
+      res.set("Access-Control-Allow-Origin", origin);
+      res.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      res.set("Access-Control-Allow-Credentials", "true");
+    }
+
+    // Handle preflight OPTIONS request
+    if (req.method === "OPTIONS") {
+      res.status(204).send("");
+      return;
+    }
+
+    if (!transporter) {
+      console.error("Email configuration missing. Cannot send email.");
+      res.status(500).send("Email configuration missing");
+      return;
+    }
+
+    // Create email content
+    const message = {
+      from: `TiffinBox <${EMAIL_FROM}>`,
+      to: req.query.email || "test@example.com",
+      subject: 'TiffinBox Email Test',
+      text: `This is a test email from TiffinBox. If you're seeing this, email sending is working correctly!`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #d62828;">TiffinBox Email Test</h2>
+          <p>This is a test email from TiffinBox.</p>
+          <p>If you're seeing this, email sending is working correctly!</p>
+          <p>Email configuration:</p>
+          <ul>
+            <li>Host: ${EMAIL_HOST}</li>
+            <li>User: ${EMAIL_USER}</li>
+            <li>From: ${EMAIL_FROM}</li>
+          </ul>
+          <p>Warm regards,<br>The TiffinBox Team</p>
+        </div>
+      `
+    };
+
+    // Send email
+    const result = await transporter.sendMail(message);
+    console.log("Test email sent successfully:", result);
+
+    res.status(200).send({
+      success: true,
+      message: "Test email sent successfully",
+      emailInfo: {
+        host: EMAIL_HOST,
+        user: EMAIL_USER,
+        from: EMAIL_FROM,
+        to: req.query.email || "test@example.com"
+      }
+    });
+  } catch (error) {
+    console.error("Error sending test email:", error);
+    res.status(500).send({
+      success: false,
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
