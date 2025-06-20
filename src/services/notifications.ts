@@ -2,7 +2,7 @@ import emailjs from '@emailjs/browser';
 
 // Initialize EmailJS with your user ID
 const emailjsInit = () => {
-  const userId = import.meta.env.VITE_EMAILJS_USER_ID || 'user_your_emailjs_user_id';
+  const userId = import.meta.env.VITE_EMAILJS_USER_ID || '_IWwL1bxz1OHGwmHT';
   emailjs.init(userId);
 };
 
@@ -18,7 +18,7 @@ const TEMPLATES = {
 };
 
 // Service ID
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_your_emailjs_service_id';
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_hzu8z7c';
 
 // Send subscription confirmation email
 export const sendSubscriptionConfirmation = async (params: {
