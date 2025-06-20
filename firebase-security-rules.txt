@@ -76,8 +76,8 @@ service cloud.firestore {
       allow write: if isAdmin();
       
       // Additional validation for payment amounts to prevent fraud
-      // FIXED: Removed request.auth != null requirement to allow Admin SDK writes
-      allow create: if validatePayment();
+      // FIXED: Only allow admin or Admin SDK to create payments with valid data
+      allow create: if isAdmin() && validatePayment();
     }
     
     // Helper function to validate payment data
