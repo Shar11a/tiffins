@@ -106,20 +106,6 @@ const TrackingInput: React.FC<TrackingInputProps> = ({ onTrackingFound }) => {
               )}
             </button>
           </form>
-
-          <div className={styles.helpSection}>
-            <h3 className={styles.helpTitle}>Need Help?</h3>
-            <div className={styles.helpOptions}>
-              <button className={styles.helpButton}>
-                <span className={styles.helpIcon}>📞</span>
-                Call Support
-              </button>
-              <button className={styles.helpButton}>
-                <span className={styles.helpIcon}>💬</span>
-                WhatsApp Us
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </section>

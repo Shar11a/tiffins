@@ -183,52 +183,6 @@
   100% { transform: rotate(360deg); }
 }
 
-.helpSection {
-  padding-top: 2rem;
-  border-top: 1px solid #f5ebe0;
-}
-
-.helpTitle {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #2b2b2b;
-  margin-bottom: 1rem;
-  font-family: 'Poppins', sans-serif;
-}
-
-.helpOptions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.helpButton {
-  background: #f5ebe0;
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 0.75rem 1.25rem;
-  color: #d62828;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.helpButton:hover {
-  background: #d62828;
-  border-color: #d62828;
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.helpIcon {
-  font-size: 1rem;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .trackingInput {
@@ -266,14 +220,6 @@
     padding: 1.1rem 1.5rem;
     font-size: 1rem;
   }
-  
-  .helpOptions {
-    flex-direction: column;
-  }
-  
-  .helpButton {
-    justify-content: center;
-  }
 }
 
 @media (max-width: 480px) {
@@ -309,19 +255,13 @@
     padding: 1rem 1.25rem;
     font-size: 0.95rem;
   }
-  
-  .helpButton {
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
-  }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .card,
   .input,
-  .submitButton,
-  .helpButton {
+  .submitButton {
     border: 2px solid currentColor;
   }
   
@@ -333,13 +273,11 @@
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .input,
-  .submitButton,
-  .helpButton {
+  .submitButton {
     transition: background-color 0.2s ease, border-color 0.2s ease;
   }
   
-  .submitButton:hover,
-  .helpButton:hover {
+  .submitButton:hover {
     transform: none;
   }
   
@@ -350,8 +288,7 @@
 
 /* Focus styles for accessibility */
 .input:focus,
-.submitButton:focus,
-.helpButton:focus {
+.submitButton:focus {
   outline: 2px solid #d62828;
   outline-offset: 2px;
 }
