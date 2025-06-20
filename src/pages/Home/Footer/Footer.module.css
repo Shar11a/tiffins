@@ -28,7 +28,7 @@
 
 .content {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 3rem;
   opacity: 0;
   transform: translateY(20px);
@@ -156,6 +156,62 @@
   border-radius: 4px;
 }
 
+/* Contact Section */
+.contactSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contactLink, .contactItem {
+  color: #f5ebe0;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  padding: 0.25rem 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contactLink::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #d62828;
+  transition: width 0.3s ease;
+}
+
+.contactLink:hover {
+  color: #ffffff;
+  transform: translateX(5px);
+}
+
+.contactLink:hover::before {
+  width: 100%;
+}
+
+.contactLink:focus {
+  outline: 2px solid #f5ebe0;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.contactIcon {
+  font-size: 1.1rem;
+}
+
 /* Legal Section */
 .legalSection {
   display: flex;
@@ -261,11 +317,13 @@
   }
   
   .navSection,
+  .contactSection,
   .legalSection {
     align-items: center;
   }
   
   .navList,
+  .contactList,
   .legalLinks {
     align-items: center;
   }
@@ -314,6 +372,8 @@
   }
   
   .navLink,
+  .contactLink,
+  .contactItem,
   .legalLink {
     font-size: 0.9rem;
   }
@@ -335,6 +395,7 @@
   
   .socialLink,
   .navLink,
+  .contactLink,
   .legalLink {
     border: 1px solid currentColor;
   }
@@ -348,12 +409,14 @@
   
   .socialLink,
   .navLink,
+  .contactLink,
   .legalLink {
     transition: color 0.2s ease;
   }
   
   .socialLink:hover,
   .navLink:hover,
+  .contactLink:hover,
   .legalLink:hover {
     transform: none;
   }

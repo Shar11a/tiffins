@@ -68,6 +68,25 @@ const Footer: React.FC = () => {
             </nav>
           </div>
 
+          {/* Contact Us Section */}
+          <div className={styles.contactSection}>
+            <h4 className={styles.sectionTitle}>Contact Us</h4>
+            <div className={styles.contactList}>
+              <a href="tel:+447352282165" className={styles.contactLink}>
+                <span className={styles.contactIcon}>📞</span>
+                +44 7352 282165
+              </a>
+              <a href="mailto:support@tiffinbox.com" className={styles.contactLink}>
+                <span className={styles.contactIcon}>📧</span>
+                support@tiffinbox.com
+              </a>
+              <div className={styles.contactItem}>
+                <span className={styles.contactIcon}>📍</span>
+                Edinburgh, UK
+              </div>
+            </div>
+          </div>
+
           {/* Legal */}
           <div className={styles.legalSection}>
             <h4 className={styles.sectionTitle}>Legal</h4>
