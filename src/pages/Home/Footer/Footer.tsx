@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
               </a>
               <a href="mailto:support@tiffinbox.com" className={styles.contactLink}>
                 <span className={styles.contactIcon}>📧</span>
-                support@tiffinbox.com
+                tiffinboxedi@gmail.com
               </a>
               <div className={styles.contactItem}>
                 <span className={styles.contactIcon}>📍</span>
