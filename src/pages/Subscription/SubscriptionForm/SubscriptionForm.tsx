@@ -168,7 +168,8 @@ const SubscriptionForm: React.FC = () => {
       const fullAddress = `${formData.flatNumber}, ${formData.buildingStreet}, ${formData.town}, ${formData.postCode}, ${formData.country}`
       
       // Calculate price in pence (for Stripe)
-      const basePrice = selectedPlan === 'veg' ? 18199 : 25999 // in pence
+      // UPDATED: Changed veg price from 18199 to 199 (£1.99)
+      const basePrice = selectedPlan === 'veg' ? 199 : 25999 // in pence
       let finalPrice = basePrice
       
       // Apply student discount if applicable (20%)
@@ -241,7 +242,7 @@ const SubscriptionForm: React.FC = () => {
 
   // Calculate prices based on plan and subscription type
   const getMonthlyPrice = () => {
-    return selectedPlan === 'veg' ? 181.99 : 259.99
+    return selectedPlan === 'veg' ? 1.99 : 259.99
   }
 
   const getCurrentPrice = () => {
@@ -326,6 +327,18 @@ const SubscriptionForm: React.FC = () => {
           <p className={styles.subtitle}>
             Choose your plan, pick your time, and get ready for home-cooked goodness
           </p>
+          <div style={{
+            background: '#e8f5e8',
+            border: '2px solid #25d366',
+            borderRadius: '8px',
+            padding: '0.75rem',
+            marginTop: '1rem',
+            fontSize: '0.9rem',
+            textAlign: 'center',
+            color: '#2b2b2b'
+          }}>
+            <strong>🗓️ Coming Soon:</strong> Our subscription service will begin on July 1st, 2025. Pre-book now to secure your spot!
+          </div>
         </div>
 
         <div className={`${styles.formCard} ${isVisible ? styles.slideUp : ''}`}>
