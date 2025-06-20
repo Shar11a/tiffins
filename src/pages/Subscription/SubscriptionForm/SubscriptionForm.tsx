@@ -337,7 +337,7 @@ const SubscriptionForm: React.FC = () => {
             textAlign: 'center',
             color: '#2b2b2b'
           }}>
-            <strong>🗓️ Coming Soon:</strong> Our subscription service will begin on July 1st, 2025. Pre-book now to secure your spot!
+            <strong>🗓️ Coming Soon:</strong> Our subscription service will begin on July 1st, 2025.
           </div>
         </div>
 
