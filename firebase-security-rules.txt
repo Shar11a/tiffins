@@ -71,16 +71,22 @@ service cloud.firestore {
                    isAdmin()
                  );
       
-      // Only allow admins to write payment data (or a trusted backend via service account)
-      allow write: if request.auth != null && isAdmin();
+      // Allow both admins and Firebase Functions (Admin SDK) to write payment data
+      // FIXED: Removed request.auth != null requirement to allow Admin SDK writes
+      allow write: if isAdmin();
       
       // Additional validation for payment amounts to prevent fraud
-      allow create: if request.auth != null && 
-                      request.resource.data.amount > 0 &&
-                      request.resource.data.currency is string &&
-                      (request.resource.data.paymentIntentId is string ||
-                       request.resource.data.stripeSessionId is string) &&
-                      request.resource.data.status in ['succeeded', 'pending', 'failed'];
+      // FIXED: Removed request.auth != null requirement to allow Admin SDK writes
+      allow create: if validatePayment();
+    }
+    
+    // Helper function to validate payment data
+    function validatePayment() {
+      return request.resource.data.amount > 0 &&
+             request.resource.data.currency is string &&
+             (request.resource.data.paymentIntentId is string ||
+              request.resource.data.stripeSessionId is string) &&
+             request.resource.data.status in ['succeeded', 'pending', 'failed'];
     }
     
     // Subscription data - secured for both customers and admins
@@ -92,7 +98,7 @@ service cloud.firestore {
                  );
 
       // Allow admins to read and write all subscriptions
-      allow read, write: if request.auth != null && isAdmin();
+      allow read, write: if isAdmin();
       
       // Allow customers to create/update their own subscriptions with limited status options
       allow create, update: if request.auth != null &&
@@ -101,7 +107,7 @@ service cloud.firestore {
                                request.resource.data.status in ['active', 'pending']));
                                
       // Prevent deletion of subscriptions by customers
-      allow delete: if request.auth != null && isAdmin();
+      allow delete: if isAdmin();
     }
     
     // Subscription payments links - join table
@@ -112,8 +118,8 @@ service cloud.firestore {
                    isAdmin()
                  );
       
-      // Only allow admins to create payment links (or a trusted backend via service account)
-      allow create: if request.auth != null && isAdmin();
+      // Only allow admins to create payment links
+      allow create: if isAdmin();
                       
       // No updates or deletes allowed to preserve payment history integrity
       allow update, delete: if false;
@@ -143,7 +149,7 @@ service cloud.firestore {
       );
       
       // Only admins can delete riders
-      allow delete: if request.auth != null && isAdmin();
+      allow delete: if isAdmin();
     }
     
     // Delivery status - allow creation for all users, allow public read access by tracking token
@@ -156,16 +162,19 @@ service cloud.firestore {
                    (document == resource.data.trackingToken && 
                     resource.data.expiresAt > request.time);
       
-      allow create: if true; // Allow unauthenticated users to create delivery status records
+      // Allow unauthenticated users to create delivery status records
+      // FIXED: Allow both authenticated users and Admin SDK to create/update
+      allow create: if true;
       
       // Allow updates from admins or assigned riders
+      // FIXED: Allow both authenticated users and Admin SDK to update
       allow update: if request.auth != null && (
         isAdmin() || 
         isAssignedRider(resource.data.assignedPartner)
-      );
+      ) || isAdmin();
       
       // Allow delete for admins
-      allow delete: if request.auth != null && isAdmin();
+      allow delete: if isAdmin();
     }
     
     // Detailed delivery collection (if used, otherwise remove)
@@ -181,7 +190,7 @@ service cloud.firestore {
                    resource.data.partnerId == request.auth.uid;
                    
       // Only admins can create or modify deliveries
-      allow write: if request.auth != null && isAdmin();
+      allow write: if isAdmin();
                     
       // Delivery partners can update status only
       allow update: if request.auth != null && 
@@ -194,9 +203,10 @@ service cloud.firestore {
     // ---------------
     
     // Check if the user is an admin
+    // FIXED: Allow Admin SDK (request.auth == null) to be considered admin
     function isAdmin() {
-      // First check if user has admin role in users collection
-      return request.auth != null && (
+      // First check if this is an Admin SDK request (no auth)
+      return request.auth == null || (
         // Check for admin role in users collection
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
